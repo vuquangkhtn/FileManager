@@ -11,7 +11,7 @@ import java.io.File;
 public class LocalPathUtils {
     private static final String LOG_FILE_NAME = "log_filemanager.txt";
     private static final String RECYCLE_BIN_NAME = "recyclebin";
-    private static final String EXTERNAL_STORAGE = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static final String EXTERNAL_STORAGE = Environment.getExternalStorageDirectory().getAbsolutePath();
 
     public static final String DES_LOG_FILE = EXTERNAL_STORAGE + File.separator + LOG_FILE_NAME;
 

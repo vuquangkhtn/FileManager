@@ -7,7 +7,7 @@ import android.util.Log;
  */
 
 public class FLog {
-    private static final String TAG = "OpenedFileManager";
+    private static final String TAG = "CustomFileManager";
 
     public static final int LOG_CONSOLE = 0;
     public static final int LOG_FILE = 1;
