@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FileManager</string>
+    <string name="some_error">Something goes wrong!</string>
 </resources>

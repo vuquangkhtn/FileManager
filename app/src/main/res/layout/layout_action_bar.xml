@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal"
+    android:background="@android:color/holo_blue_light">
+
+    <ImageButton
+        android:id="@+id/imb_navi_menu"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@android:color/holo_blue_light"
+        android:src="@drawable/ic_action_menu" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="22dp" />
+    <ImageButton
+        android:id="@+id/imb_navi_list_mode"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="@dimen/d10"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/holo_blue_light"
+        android:src="@drawable/ic_action_list"
+        android:visibility="gone" />
+    <ImageButton
+        android:id="@+id/imb_navi_grid_mode"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="@dimen/d10"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/holo_blue_light"
+        android:src="@drawable/ic_grid"/>
+    <ImageButton
+        android:id="@+id/imb_navi_more"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="@dimen/d10"
+        android:layout_gravity="end"
+        android:background="@android:color/holo_blue_light"
+        android:src="@drawable/ic_action_more_white" />
+</LinearLayout>

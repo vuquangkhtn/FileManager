@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:gravity="center_vertical"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/d70">
+    <ImageView
+        android:id="@+id/imv_file_icon"
+        android:layout_alignParentTop="true"
+        android:layout_width="@dimen/d60"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/d5"
+        android:layout_marginRight="15dp" />
+    <LinearLayout
+        android:id="@+id/container_content"
+        android:layout_toRightOf="@id/imv_file_icon"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/d5"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_file_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textColor="@color/main_text"/>
+        <TextView
+            android:id="@+id/tv_file_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textSize="16sp"
+            android:textColor="@color/hint_text"/>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/imv_more"
+        android:layout_width="@dimen/d40"
+        android:layout_height="@dimen/d40"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/d10"
+        android:background="@drawable/ic_action_more"/>
+</RelativeLayout>
