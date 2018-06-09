@@ -30,4 +30,13 @@ public class OpenActionManager {
             }
         }
     }
+
+    public long getOpenTime(String path) {
+        for (OpenAction act: actionList) {
+            if(act.getPath().equals(path)) {
+                return act.getLastOpenedTime();
+            }
+        }
+        return 0;
+    }
 }

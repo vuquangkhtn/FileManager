@@ -4,19 +4,24 @@ package com.onlinetest.vuquang.filemanager.data.model.access;
  * Created by VuQuang on 6/9/2018.
  */
 
-public class OpenAction {
-    private String path;
+public class OpenAction extends AccessAction{
     private long lastOpenedTime;
 
     public boolean execute() {
         return false;
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    public void logMessage() {
+
     }
 
-    public void setPath(String path) {
-        this.path = path;
+
+    public long getLastOpenedTime() {
+        return lastOpenedTime;
+    }
+
+    public void setLastOpenedTime(long lastOpenedTime) {
+        this.lastOpenedTime = lastOpenedTime;
     }
 }
