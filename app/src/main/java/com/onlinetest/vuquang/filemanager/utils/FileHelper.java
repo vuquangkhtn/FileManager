@@ -15,7 +15,7 @@ import java.nio.channels.FileChannel;
  */
 
 public class FileHelper {
-    public static final String TAG = "FileHelper";
+    private static final String TAG = "FileHelper";
 
     public static boolean isExist(String path) {
         File file = new File(path);
@@ -48,20 +48,22 @@ public class FileHelper {
         }
     }
 
-    public static void copyFileOrDirectory(String srcDir, String dstDir) {
+    public static void copyFileOrDirectory(String srcFile, String dstDir) {
+        File desFolder = new File(dstDir);
+        if(!desFolder.isDirectory()) {
+            Log.d(TAG,"desDir is not a directory");
+            return;
+        }
+
+        File src = new File(srcFile);
+        File dst = new File(dstDir, src.getName());
 
         try {
-            File src = new File(srcDir);
-            File dst = new File(dstDir, src.getName());
-
             if (src.isDirectory()) {
-
-                String files[] = src.list();
-                for (int i = 0; i < files.length; i++) {
-                    String src1 = (new File(src, files[i]).getPath());
+                for (String filePath : src.list()) {
+                    String src1 = (new File(src, filePath).getPath());
                     String dst1 = dst.getPath();
                     copyFileOrDirectory(src1, dst1);
-
                 }
             } else {
                 copyFile(src, dst);
@@ -73,10 +75,17 @@ public class FileHelper {
 
     private static void copyFile(File sourceFile, File destFile) throws IOException {
         if (!destFile.getParentFile().exists()) {
-            destFile.getParentFile().mkdirs();
+            if(destFile.getParentFile().mkdirs()) {
+                Log.d(TAG,"create parent folder failed");
+                return;
+            }
         }
+
         if (!destFile.exists()) {
-            destFile.createNewFile();
+            if(destFile.createNewFile()) {
+                Log.d(TAG,"create new file failed");
+                return;
+            }
         }
 
         FileChannel source = null;
@@ -86,7 +95,9 @@ public class FileHelper {
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(destFile).getChannel();
             destination.transferFrom(source, 0, source.size());
-        } finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
             if (source != null) {
                 source.close();
             }
@@ -96,14 +107,15 @@ public class FileHelper {
         }
     }
 
-    static void append(String path, String message) {
+    static boolean append(String path, String message) {
         if(!isExist(path))
         {
             if(!createFileOrDirectory(path)) {
-                return;
+                return false;
             }
         }
 
+        boolean isSuccess;
         BufferedWriter bw = null;
         FileWriter fw = null;
         try {
@@ -111,8 +123,10 @@ public class FileHelper {
             bw = new BufferedWriter(fw);
 
             bw.write(message+"\n");
+            isSuccess = true;
         }
         catch(Exception e) {
+            isSuccess = false;
             e.printStackTrace();
         }
         finally {
@@ -130,5 +144,22 @@ public class FileHelper {
                 ex.printStackTrace();
             }
         }
+        return isSuccess;
     }
+
+    public static boolean moveFile(String srcPath, String desDir) {
+        copyFileOrDirectory(srcPath, desDir);
+        return removeFile(srcPath);
+    }
+
+    public static String getParentDir(String filePath) {
+        File file = new File(filePath);
+        return file.getParent();
+    }
+
+    public static String getFileName(String filePath) {
+        File file = new File(filePath);
+        return file.getName();
+    }
+
 }
