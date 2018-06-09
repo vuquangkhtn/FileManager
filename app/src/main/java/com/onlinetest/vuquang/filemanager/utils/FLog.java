@@ -13,9 +13,6 @@ import java.io.File;
 
 public class FLog {
     private static final String TAG = "FileManager";
-    private static final String logFileName = "log_filemanager.txt";
-    private static final String desFilePath = Environment.getExternalStorageDirectory()
-            + File.separator + logFileName;
 
     public static final int LOG_CONSOLE = 0;
     public static final int LOG_FILE = 1;
@@ -29,7 +26,7 @@ public class FLog {
                 break;
             }
             case LOG_FILE: {
-                logToFile(desFilePath, message);
+                logToFile(LocalPathUtils.DES_LOG_FILE, message);
                 break;
             }
             default: {
