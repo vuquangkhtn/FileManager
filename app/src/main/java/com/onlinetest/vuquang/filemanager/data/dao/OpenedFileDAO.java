@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.onlinetest.vuquang.filemanager.data.model.file.OpenedFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class OpenedFileDAO extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertOpenedFile(OpenedFile file) {
+    public boolean insertOpenedFile(CustomFile file) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -69,33 +69,33 @@ public class OpenedFileDAO extends SQLiteOpenHelper {
                 new String[] { path });
     }
 
-    public OpenedFile getOpenedFile(int id) {
-        OpenedFile file = new OpenedFile();
-
+    public CustomFile getOpenedFile(String path) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String sqlExec = MessageFormat.format("SELECT * FROM {0} WHERE {1} = ?",TABLE_NAME, COLUMN_ID);
-        Cursor cursor = db.rawQuery(sqlExec, new String[]{Integer.toString(id)});
+        String sqlExec = MessageFormat.format("SELECT * FROM {0} WHERE {1} = ?",TABLE_NAME, COLUMN_PATH);
+        Cursor cursor = db.rawQuery(sqlExec, new String[]{path});
 
         if (cursor != null)
             cursor.moveToFirst();
 
-        file = new OpenedFile();
+        CustomFile file = new CustomFile();
         file.setId(Integer.parseInt(cursor.getString(0)));
-        file.setPath(cursor.getString(1));
+        file.setPath(path);
         file.setLastOpenedTime(cursor.getLong(2));
+
+        cursor.close();
 
         return file;
     }
 
-    public List<OpenedFile> getAllOpenedFiles() {
-        List<OpenedFile> list = new ArrayList<>();
+    public List<CustomFile> getAllOpenedFiles() {
+        List<CustomFile> list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery( "SELECT * FROM " + TABLE_NAME, null );
 
         if (cursor.moveToFirst()) {
             do {
-                OpenedFile file = new OpenedFile();
+                CustomFile file = new CustomFile();
                 file.setId(Integer.parseInt(cursor.getString(0)));
                 file.setPath(cursor.getString(1));
                 file.setLastOpenedTime(cursor.getLong(2));
@@ -103,6 +103,8 @@ public class OpenedFileDAO extends SQLiteOpenHelper {
                 list.add(file);
             } while (cursor.moveToNext());
         }
+
+        cursor.close();
 
         return list;
     }

@@ -3,7 +3,7 @@ package com.onlinetest.vuquang.filemanager.data.manager;
 import android.content.Context;
 
 import com.onlinetest.vuquang.filemanager.data.dao.OpenedFileDAO;
-import com.onlinetest.vuquang.filemanager.data.model.file.OpenedFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 
 import java.util.List;
 
@@ -11,20 +11,22 @@ import java.util.List;
  * Created by VuQuang on 6/9/2018.
  */
 
-public class OpenedFileManager {
+public class CustomFileManager {
     private OpenedFileDAO dao;
 
-    public OpenedFileManager(Context context) {
+    public CustomFileManager(Context context) {
         dao = new OpenedFileDAO(context);
     }
 
     public boolean addOpenedFile(String path) {
         removeIfContain(path);
-        return dao.insertOpenedFile(new OpenedFile(path));
+        CustomFile file = new CustomFile(path);
+        file.setLastOpenedTime(System.currentTimeMillis());
+        return dao.insertOpenedFile(file);
     }
 
     public long getOpenTime(String path) {
-        for (OpenedFile file : getAllOpenedFile()) {
+        for (CustomFile file : getAllOpenedFile()) {
             if(file.getPath().equals(path)) {
                 return file.getLastOpenedTime();
             }
@@ -33,7 +35,7 @@ public class OpenedFileManager {
     }
 
     private void removeIfContain(String path) {
-        for (OpenedFile file : getAllOpenedFile()) {
+        for (CustomFile file : getAllOpenedFile()) {
             if(file.getPath().equals(path)) {
                 dao.deleteOpenedFile(path);
                 return;
@@ -41,7 +43,7 @@ public class OpenedFileManager {
         }
     }
 
-    public List<OpenedFile> getAllOpenedFile() {
+    public List<CustomFile> getAllOpenedFile() {
         return dao.getAllOpenedFiles();
     }
 

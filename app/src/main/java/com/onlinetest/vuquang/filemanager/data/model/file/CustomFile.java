@@ -1,22 +1,28 @@
 package com.onlinetest.vuquang.filemanager.data.model.file;
 
+import com.onlinetest.vuquang.filemanager.utils.FileHelper;
+
+import java.io.File;
+
 /**
  * Created by VuQuang on 6/9/2018.
  */
 
-public class OpenedFile {
+public class CustomFile {
 
     private int id;
-    private String path;
+    private File file;
     private long lastOpenedTime;
 
-    public OpenedFile() {
-
+    public CustomFile() {
+        id = -1;
+        file = null;
+        lastOpenedTime = 0;
     }
 
-    public OpenedFile(String path) {
-        this.path = path;
-        this.lastOpenedTime = System.currentTimeMillis();
+    public CustomFile(String path) {
+        this.file = FileHelper.getFile(path);
+        lastOpenedTime = 0;
     }
 
     public int getId() {
@@ -28,11 +34,11 @@ public class OpenedFile {
     }
 
     public String getPath() {
-        return path;
+        return file.getPath();
     }
 
     public void setPath(String path) {
-        this.path = path;
+        this.file = FileHelper.getFile(path);
     }
 
     public long getLastOpenedTime() {
