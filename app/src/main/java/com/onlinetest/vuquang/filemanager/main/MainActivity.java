@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         imbGridMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchMode(GRID_MODE);
+                switchMode(LIST_MODE);
             }
         });
 
@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         imbListMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchMode(LIST_MODE);
+                switchMode(GRID_MODE);
             }
         });
 

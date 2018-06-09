@@ -24,17 +24,17 @@
         android:textSize="22dp" />
     <ImageButton
         android:id="@+id/imb_navi_list_mode"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginLeft="@dimen/d10"
         android:layout_gravity="center_vertical"
         android:background="@android:color/holo_blue_light"
-        android:src="@drawable/ic_action_list"
-        android:visibility="gone" />
+        android:src="@drawable/ic_list"
+        android:visibility="gone"/>
     <ImageButton
         android:id="@+id/imb_navi_grid_mode"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginLeft="@dimen/d10"
         android:layout_gravity="center_vertical"
         android:background="@android:color/holo_blue_light"
