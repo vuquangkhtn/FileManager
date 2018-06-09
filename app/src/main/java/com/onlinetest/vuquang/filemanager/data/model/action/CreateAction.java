@@ -1,4 +1,4 @@
-package com.onlinetest.vuquang.filemanager.data.model.modify;
+package com.onlinetest.vuquang.filemanager.data.model.action;
 
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
@@ -9,7 +9,7 @@ import java.text.MessageFormat;
  * Created by VuQuang on 6/9/2018.
  */
 
-public class CreateAction implements ModifyAction {
+public class CreateAction implements FileAction {
     private String path;
 
     public CreateAction(String path) {

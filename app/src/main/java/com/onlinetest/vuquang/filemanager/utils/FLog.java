@@ -12,7 +12,7 @@ import java.io.File;
  */
 
 public class FLog {
-    private static final String TAG = "FileManager";
+    private static final String TAG = "OpenedFileManager";
 
     public static final int LOG_CONSOLE = 0;
     public static final int LOG_FILE = 1;

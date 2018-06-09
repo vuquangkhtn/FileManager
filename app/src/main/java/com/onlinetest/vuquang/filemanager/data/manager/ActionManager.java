@@ -1,6 +1,6 @@
 package com.onlinetest.vuquang.filemanager.data.manager;
 
-import com.onlinetest.vuquang.filemanager.data.model.modify.ModifyAction;
+import com.onlinetest.vuquang.filemanager.data.model.action.FileAction;
 
 import java.util.Stack;
 
@@ -8,11 +8,11 @@ import java.util.Stack;
  * Created by VuQuang on 6/9/2018.
  */
 
-public class ModifyActionManager {
-    private Stack<ModifyAction> actions = new Stack<>();
-    private Stack<ModifyAction> undoActions = new Stack<>();
+public class ActionManager {
+    private Stack<FileAction> actions = new Stack<>();
+    private Stack<FileAction> undoActions = new Stack<>();
 
-    public boolean addAction(ModifyAction action) {
+    public boolean addAction(FileAction action) {
         if(action.execute()) {
             actions.push(action);
             undoActions.clear();
@@ -23,7 +23,7 @@ public class ModifyActionManager {
 
     public boolean undo() {
         if(canUndo()) {
-            ModifyAction action = actions.peek();
+            FileAction action = actions.peek();
             if(action.undo()) {
                 actions.pop();
                 undoActions.push(action);
@@ -35,7 +35,7 @@ public class ModifyActionManager {
 
     public boolean redo() {
         if(canRedo()) {
-            ModifyAction action = undoActions.peek();
+            FileAction action = undoActions.peek();
             if(action.execute()) {
                 actions.push(action);
                 undoActions.pop();

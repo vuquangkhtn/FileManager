@@ -1,9 +1,7 @@
-package com.onlinetest.vuquang.filemanager.data.model.modify;
+package com.onlinetest.vuquang.filemanager.data.model.action;
 
-import com.onlinetest.vuquang.filemanager.data.model.FileAction;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
-import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
 import java.text.MessageFormat;
 
@@ -11,7 +9,7 @@ import java.text.MessageFormat;
  * Created by VuQuang on 6/9/2018.
  */
 
-public class PermanentlyDeleteAction implements ModifyAction {
+public class PermanentlyDeleteAction implements FileAction {
     private String path;
 
     public PermanentlyDeleteAction(String path) {
