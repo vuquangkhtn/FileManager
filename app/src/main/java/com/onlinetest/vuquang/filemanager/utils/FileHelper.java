@@ -110,7 +110,7 @@ public class FileHelper {
             fw = new FileWriter(path, true);
             bw = new BufferedWriter(fw);
 
-            bw.write(message);
+            bw.write(message+"\n");
         }
         catch(Exception e) {
             e.printStackTrace();

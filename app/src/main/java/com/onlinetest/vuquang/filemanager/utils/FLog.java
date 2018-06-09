@@ -13,19 +13,36 @@ import java.io.File;
 
 public class FLog {
     private static final String TAG = "FileManager";
+    private static final String logFileName = "log_filemanager.txt";
     private static final String desFilePath = Environment.getExternalStorageDirectory()
-            + File.separator + "log_filemanager.txt";
+            + File.separator + logFileName;
+
+    public static final int LOG_CONSOLE = 0;
+    public static final int LOG_FILE = 1;
+
+    private static int logType = 0;
 
     public static void show(String message) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, message);
-        } else {
-            logToFile(desFilePath, message);
+        switch (logType) {
+            case LOG_CONSOLE: {
+                Log.d(TAG, message);
+                break;
+            }
+            case LOG_FILE: {
+                logToFile(desFilePath, message);
+                break;
+            }
+            default: {
+                Log.d(TAG,"Wrong log type");
+            }
         }
     }
 
-    private static void logToFile(String desFilePath, String message) {
+    public static void setLogType(int type) {
+        logType = type;
+    }
 
+    private static void logToFile(String desFilePath, String message) {
         FileHelper.append(desFilePath, message);
     }
 }
