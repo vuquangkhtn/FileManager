@@ -107,7 +107,7 @@ public class FileHelper {
         }
     }
 
-    static boolean append(String path, String message) {
+    static boolean appendStrToFile(String path, String message) {
         if(!isExist(path))
         {
             if(!createFileOrDirectory(path)) {
@@ -160,6 +160,10 @@ public class FileHelper {
     public static String getFileName(String filePath) {
         File file = new File(filePath);
         return file.getName();
+    }
+
+    public static File getFile(String path) {
+        return new File(path);
     }
 
 }

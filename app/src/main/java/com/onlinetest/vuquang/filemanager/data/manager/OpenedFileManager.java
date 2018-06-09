@@ -1,8 +1,10 @@
 package com.onlinetest.vuquang.filemanager.data.manager;
 
+import android.content.Context;
+
+import com.onlinetest.vuquang.filemanager.data.dao.OpenedFileDAO;
 import com.onlinetest.vuquang.filemanager.data.model.file.OpenedFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,27 +12,37 @@ import java.util.List;
  */
 
 public class OpenedFileManager {
-    private List<OpenedFile> openedFiles = new ArrayList();
+    private OpenedFileDAO dao;
 
-    public void addOpenedFile(String path) {
-        removeIfContain(path);
-        openedFiles.add(new OpenedFile(path));
+    public OpenedFileManager(Context context) {
+        dao = new OpenedFileDAO(context);
     }
 
-    private void removeIfContain(String path) {
-        for (OpenedFile act: openedFiles) {
-            if(act.getPath().equals(path)) {
-                openedFiles.remove(act);
-            }
-        }
+    public boolean addOpenedFile(String path) {
+        removeIfContain(path);
+        return dao.insertOpenedFile(new OpenedFile(path));
     }
 
     public long getOpenTime(String path) {
-        for (OpenedFile file : openedFiles) {
+        for (OpenedFile file : getAllOpenedFile()) {
             if(file.getPath().equals(path)) {
                 return file.getLastOpenedTime();
             }
         }
         return 0;
     }
+
+    private void removeIfContain(String path) {
+        for (OpenedFile file : getAllOpenedFile()) {
+            if(file.getPath().equals(path)) {
+                dao.deleteOpenedFile(path);
+                return;
+            }
+        }
+    }
+
+    public List<OpenedFile> getAllOpenedFile() {
+        return dao.getAllOpenedFiles();
+    }
+
 }
