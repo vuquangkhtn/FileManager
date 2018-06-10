@@ -1,4 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -228,7 +231,18 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     @Override
-    public void openFile(File file) {
+    public void openFile(CustomFile file) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file.getFile()), file.getExtension());
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            showMessage("This file is not supported");
+        }
+    }
+
+    @Override
+    public void updateEmptyListUI() {
 
     }
 }

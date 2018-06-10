@@ -91,7 +91,7 @@ public class CustomFile {
         }
     }
 
-    private String getExtension() {
+    public String getExtension() {
         String extension = "";
 
         int i = getName().lastIndexOf('.');

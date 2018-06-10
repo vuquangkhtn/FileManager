@@ -27,7 +27,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     public void loadExternalStorage() {
         File file = FileHelper.getFile(LocalPathUtils.EXTERNAL_STORAGE);
         updateList(file);
-        getMvpView().updateUI(fileList);
     }
 
     @Override
@@ -54,7 +53,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     public void loadRecycleBin() {
         File file = FileHelper.getRecycleBin();
         updateList(file);
-        getMvpView().updateUI(fileList);
     }
 
     @Override
@@ -62,7 +60,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(file.getFile().isDirectory()) {
             updateList(file.getFile());
         } else {
-            getMvpView().openFile(file.getFile());
+            getMvpView().openFile(file);
         }
     }
 
@@ -82,14 +80,16 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     private void updateList(File file) {
-        if(file.listFiles() == null) {
-            fileList.clear();
-        } else {
+        fileList.clear();
+        if(file.listFiles() != null && file.listFiles().length != 0) {
             for (File childFile:file.listFiles()) {
                 CustomFile customFile = new CustomFile(childFile.getPath());
                 customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
                 fileList.add(customFile);
             }
+            getMvpView().updateUI(fileList);
+        } else {
+            getMvpView().updateEmptyListUI();
         }
     }
 }
