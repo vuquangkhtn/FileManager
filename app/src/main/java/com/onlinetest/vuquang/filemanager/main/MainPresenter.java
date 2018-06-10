@@ -7,6 +7,7 @@ import com.onlinetest.vuquang.filemanager.data.model.action.CopyAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.CreateFileAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.CreateFolderAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
+import com.onlinetest.vuquang.filemanager.data.model.action.MoveAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
@@ -111,12 +112,22 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     @Override
-    public void doCopy(String srcFile, String desPath) {
+    public void copyFile(String srcFile, String desPath) {
         if(!getDataManager().getActionManager().addAction(new CopyAction(srcFile, desPath))) {
             getMvpView().onError("Copy failed");
         } else {
             updateList(new File(desPath));
             getMvpView().showMessage("Copy successful");
+        }
+    }
+
+    @Override
+    public void moveFile(String srcFile, String desPath) {
+        if(!getDataManager().getActionManager().addAction(new MoveAction(srcFile, desPath))) {
+            getMvpView().onError("Move failed");
+        } else {
+            updateList(new File(desPath));
+            getMvpView().showMessage("Move successful");
         }
     }
 
@@ -237,6 +248,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         FileManagerApp.getApp().setCurPath(directory.getPath());
         if(directory.listFiles() != null && directory.listFiles().length != 0) {
             for (File childFile:directory.listFiles()) {
+                if(childFile.getName().startsWith(".")) {//hidden file
+                    continue;
+                }
                 CustomFile customFile = new CustomFile(childFile.getPath());
                 customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
                 fileList.add(customFile);
