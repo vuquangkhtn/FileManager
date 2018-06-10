@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     private RecyclerView rvFileList;
     private DrawerLayout mDrawer;
     private NavigationView navigationView;
-    private ImageButton imbMenu, imbGridMode, imbListMode, imbMore, imbBack;
+    private ImageButton imbMenu, imbMore, imbBack;
     private TextView txtTitle,txtPath;
     private View layoutPath;
     private PopupMenu pm;
@@ -63,24 +63,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
         txtTitle = findViewById(R.id.tv_title);
         mDrawer = findViewById(R.id.drawer_layout);
-
-        imbGridMode = findViewById(R.id.imb_navi_grid_mode);
-        imbGridMode.setVisibility(View.VISIBLE);
-        imbGridMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchMode(LIST_MODE);
-            }
-        });
-
-        imbListMode = findViewById(R.id.imb_navi_list_mode);
-        imbListMode.setVisibility(View.GONE);
-        imbListMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchMode(GRID_MODE);
-            }
-        });
 
         imbMenu = findViewById(R.id.imb_navi_menu);
         imbMenu.setOnClickListener(new View.OnClickListener() {
@@ -206,21 +188,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         menuItem.setChecked(true);
         mDrawer.closeDrawers();
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, navigationView);
-    }
 
-    public void switchMode(int mode) {
-        switch (mode) {
-            case LIST_MODE: {
-                imbGridMode.setVisibility(View.GONE);
-                imbListMode.setVisibility(View.VISIBLE);
-                break;
-            }
-            case GRID_MODE: {
-                imbGridMode.setVisibility(View.VISIBLE);
-                imbListMode.setVisibility(View.GONE);
-                break;
-            }
-        }
     }
 
     private void showPopupMenu(View v) {
