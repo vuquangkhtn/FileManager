@@ -87,9 +87,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                 customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
                 fileList.add(customFile);
             }
-            getMvpView().updateUI(fileList);
         } else {
             getMvpView().updateEmptyListUI();
         }
+        getMvpView().updateUI(fileList);
     }
 }
