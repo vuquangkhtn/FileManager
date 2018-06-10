@@ -1,5 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,8 +9,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -19,13 +23,14 @@ import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements MainMvpView{
     private static final String TAG = "MainActivity";
+
+    private static final int FILE_SELECT_CODE = 100;
 
     public static final int LIST_MODE = 0;
     public static final int GRID_MODE = 1;
@@ -129,12 +134,12 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
             @Override
             public void onMoveClicked(CustomFile file) {
-                showChoseDesFolderDialog();
+                showChoseDesFolderDialog(file);
             }
 
             @Override
             public void onCopyClicked(CustomFile file) {
-                showChoseDesFolderDialog();
+                showChoseDesFolderDialog(file);
             }
 
             @Override
@@ -145,10 +150,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
         mPresenter.loadQuickAccess();
         navigationView.setCheckedItem(R.id.nav_quick_access);
-    }
-
-    private void showChoseDesFolderDialog() {
-
     }
 
     private void updateMenuItem(MenuItem menuItem) {
@@ -208,11 +209,11 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                         return true;
                     }
                     case R.id.action_create_file: {
-                        showCreateFileDialog();
+                        showCreateFileDialog("Input file name");
                         return true;
                     }
                     case R.id.action_create_folder: {
-                        showCreateFolderDialog();
+                        showCreateFolderDialog("Input folder name");
                         return true;
                     }
                     default:{
@@ -225,12 +226,68 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         pm.show();
     }
 
-    private void showCreateFolderDialog() {
+    private void showCreateFolderDialog(String s) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(s);
 
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPresenter.createFolder(String.valueOf(input.getText()));
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
-    private void showCreateFileDialog() {
+    private void showChoseDesFolderDialog(CustomFile file) {
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.setType("*/*");
+//        intent.putExtra("srcFile", file.getPath());
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//
+//        try {
+//            startActivityForResult(
+//                    Intent.createChooser(intent, "Select a Folder"),
+//                    FILE_SELECT_CODE);
+//        } catch (android.content.ActivityNotFoundException ex) {
+//            // Potentially direct the user to the Market with a Dialog
+//            showMessage("Please install a File Manager.");
+//        }
+    }
 
+    private void showCreateFileDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPresenter.createFile(String.valueOf(input.getText()));
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private void showSortOptionDialog() {

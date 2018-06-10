@@ -22,18 +22,29 @@ public class FileHelper {
         return file.exists();
     }
 
-    public static boolean createFileOrDirectory(String path) {
-        boolean createFile;
-        File file = new File(path);
-        createFile = file.mkdirs();
-        if(!getExtension(getFileName(path)).isEmpty()) {
-            try {
-                createFile = file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public static boolean createDirectory(String path) {
+        boolean createFile = false;
+        if(getExtension(getFileName(path)).isEmpty()) {
+            File file = new File(path);
+            createFile = file.mkdirs();
         }
 
+        return createFile;
+    }
+
+    public static boolean createFile(String path) {
+        boolean createFile = false;
+        File file;
+        if(getExtension(path).isEmpty()) {
+            file = new File(path+".txt");
+        } else {
+            file = new File(path);
+        }
+        try {
+            createFile = file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return createFile;
     }
 
@@ -112,7 +123,7 @@ public class FileHelper {
     static boolean appendStrToFile(String path, String message) {
         if(!isExist(path))
         {
-            if(!createFileOrDirectory(path)) {
+            if(!createDirectory(path)) {
                 return false;
             }
         }

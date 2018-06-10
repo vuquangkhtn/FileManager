@@ -4,7 +4,6 @@ import com.onlinetest.vuquang.filemanager.data.model.action.FileAction;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
-import java.io.File;
 import java.util.Stack;
 
 /**
@@ -23,7 +22,7 @@ public class ActionManager {
 
     private void createRecycleBinDir() {
         if(!FileHelper.isExist(LocalPathUtils.RECYCLE_BIN_DIR)) {
-            FileHelper.createFileOrDirectory(LocalPathUtils.RECYCLE_BIN_DIR);
+            FileHelper.createDirectory(LocalPathUtils.RECYCLE_BIN_DIR);
         }
     }
 

@@ -3,6 +3,9 @@ package com.onlinetest.vuquang.filemanager.main;
 import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.base.BasePresenter;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
+import com.onlinetest.vuquang.filemanager.data.model.action.CopyAction;
+import com.onlinetest.vuquang.filemanager.data.model.action.CreateFileAction;
+import com.onlinetest.vuquang.filemanager.data.model.action.CreateFolderAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
@@ -100,6 +103,40 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void showProperties(CustomFile file) {
 
+    }
+
+    @Override
+    public void doCopy(String srcFile, String desPath) {
+        if(!getDataManager().getActionManager().addAction(new CopyAction(srcFile, desPath))) {
+            getMvpView().onError("Copy failed");
+        } else {
+            updateList(new File(desPath));
+            getMvpView().showMessage("Copy successful");
+        }
+    }
+
+    @Override
+    public void createFile(String s) {
+        String curPath = FileManagerApp.getApp().getCurPath();
+        String filePath = curPath + File.separator + s;
+        if(!getDataManager().getActionManager().addAction(new CreateFileAction(filePath))) {
+            getMvpView().onError("Create failed");
+        } else {
+            updateList(new File(curPath));
+            getMvpView().showMessage("Create successful");
+        }
+    }
+
+    @Override
+    public void createFolder(String s) {
+        String curPath = FileManagerApp.getApp().getCurPath();
+        String filePath = curPath + File.separator + s;
+        if(!getDataManager().getActionManager().addAction(new CreateFolderAction(filePath))) {
+            getMvpView().onError("Create failed");
+        } else {
+            updateList(new File(curPath));
+            getMvpView().showMessage("Create successful");
+        }
     }
 
     private void updateList(File directory) {
