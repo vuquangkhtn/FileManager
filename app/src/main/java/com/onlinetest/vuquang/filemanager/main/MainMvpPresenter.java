@@ -29,4 +29,14 @@ public interface MainMvpPresenter<V extends MainMvpView> extends MvpPresenter<V>
     void createFile(String s);
 
     void createFolder(String s);
+
+    void sortListByName();
+
+    void sortListByCreatedTime();
+
+    void sortListByModifed();
+
+    void sortListByOpenedTime();
+
+    void sortListByFileType();
 }

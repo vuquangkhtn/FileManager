@@ -9,6 +9,7 @@ import com.onlinetest.vuquang.filemanager.data.model.action.CreateFolderAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
@@ -73,8 +74,10 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     public void openFile(CustomFile file) {
         if(file.getFile().isDirectory()) {
             updateList(file.getFile());
+            FLog.show("browse directory "+file.getPath());
         } else {
             getMvpView().openFile(file);
+            FLog.show("open file "+file.getPath());
         }
     }
 
@@ -137,6 +140,31 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             updateList(new File(curPath));
             getMvpView().showMessage("Create successful");
         }
+    }
+
+    @Override
+    public void sortListByName() {
+
+    }
+
+    @Override
+    public void sortListByCreatedTime() {
+
+    }
+
+    @Override
+    public void sortListByModifed() {
+
+    }
+
+    @Override
+    public void sortListByOpenedTime() {
+
+    }
+
+    @Override
+    public void sortListByFileType() {
+
     }
 
     private void updateList(File directory) {

@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onlinetest.vuquang.filemanager.R;
@@ -30,11 +32,10 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements MainMvpView{
     private static final String TAG = "MainActivity";
 
-    private static final int FILE_SELECT_CODE = 100;
-
     public static final int LIST_MODE = 0;
     public static final int GRID_MODE = 1;
 
+    String[] arrRadioBtnName = {"Name", "Created Time", "Last Modified", "Last Opened Time", "File Type"};
 
     FileAdapter mAdapter;
     RecyclerView rvFileList;
@@ -295,7 +296,58 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     private void showSortOptionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sort Type");
 
+        final RadioButton[] rb = new RadioButton[5];
+        final RadioGroup rg = new RadioGroup(this); //create the RadioGroup
+        rg.setOrientation(RadioGroup.HORIZONTAL);//or RadioGroup.VERTICAL
+        for(int i=0; i<5; i++){
+            rb[i]  = new RadioButton(this);
+            rb[i].setText(arrRadioBtnName[i]);
+            rb[i].setId(i + 100);
+            rg.addView(rb[i]);
+        }
+        rg.check(0);
+        builder.setView(rg);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int checked = rg.getCheckedRadioButtonId();
+
+                switch (checked) {
+                    case 0: {//Name
+                        mPresenter.sortListByName();
+                        break;
+                    }
+                    case 1: {//Created
+                        mPresenter.sortListByCreatedTime();
+                        break;
+                    }
+                    case 2: {//Modified
+                        mPresenter.sortListByModifed();
+                        break;
+                    }
+                    case 3: {//Opened Time
+                        mPresenter.sortListByOpenedTime();
+                        break;
+                    }
+                    case 4: {//File Type
+                        mPresenter.sortListByFileType();
+                        break;
+                    }
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
     public void openDrawer() {
         mDrawer.openDrawer(navigationView);

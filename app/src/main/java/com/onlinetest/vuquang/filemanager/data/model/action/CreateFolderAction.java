@@ -27,7 +27,7 @@ public class CreateFolderAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Create {0}", path));
+        FLog.show(MessageFormat.format("Create Folder {0}", path));
     }
 
     @Override
