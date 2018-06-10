@@ -21,10 +21,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onlinetest.vuquang.filemanager.R;
+import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.base.BaseActivity;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
+import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,16 +38,17 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     public static final int LIST_MODE = 0;
     public static final int GRID_MODE = 1;
 
-    String[] arrRadioBtnName = {"Name", "Created Time", "Last Modified", "Last Opened Time", "File Type"};
-    int[] arrRadioBtnId = {100, 101, 102, 103, 104};
+    private String[] arrRadioBtnName = {"Name", "Created Time", "Last Modified", "Last Opened Time", "File Type"};
+    private int[] arrRadioBtnId = {100, 101, 102, 103, 104};
 
-    FileAdapter mAdapter;
-    RecyclerView rvFileList;
+    private FileAdapter mAdapter;
+    private RecyclerView rvFileList;
     private DrawerLayout mDrawer;
     private NavigationView navigationView;
-    private ImageButton imbMenu, imbGridMode, imbListMode, imbMore;
-    private TextView txtTitle;
-    PopupMenu pm;
+    private ImageButton imbMenu, imbGridMode, imbListMode, imbMore, imbBack;
+    private TextView txtTitle,txtPath;
+    private View layoutPath;
+    private PopupMenu pm;
     private MainMvpPresenter<MainMvpView> mPresenter;
 
     @Override
@@ -93,7 +96,16 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             }
         });
 
-        recreatePopupLayout(null);
+        imbBack = findViewById(R.id.imb_navi_back);
+        imbBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.onBackClicked();
+            }
+        });
+
+        layoutPath = findViewById(R.id.layout_path);
+        txtPath = findViewById(R.id.tv_path);
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -104,16 +116,19 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                             case R.id.nav_quick_access:
                                 mPresenter.loadQuickAccess();
                                 imbMore.setVisibility(View.VISIBLE);
+                                layoutPath.setVisibility(View.GONE);
                                 recreatePopupLayout(menuItem);
                                 break;
                             case R.id.nav_storage:
                                 mPresenter.loadExternalStorage();
                                 imbMore.setVisibility(View.VISIBLE);
+                                layoutPath.setVisibility(View.VISIBLE);
                                 recreatePopupLayout(menuItem);
                                 break;
                             case R.id.nav_recycle_bin:
                                 mPresenter.loadRecycleBin();
                                 imbMore.setVisibility(View.GONE);
+                                layoutPath.setVisibility(View.GONE);
                                 break;
                         }
                         updateMenuItem(menuItem);
@@ -157,9 +172,16 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 showPropertiesDialog(file);
             }
         });
+        setQuickAccessUI();
+    }
+
+    private void setQuickAccessUI() {
+        layoutPath.setVisibility(View.GONE);
+        recreatePopupLayout(null);
 
         mPresenter.loadQuickAccess();
         navigationView.setCheckedItem(R.id.nav_quick_access);
+
     }
 
     private void updateMenuItem(MenuItem menuItem) {
@@ -185,7 +207,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     private void showPopupMenu(View v) {
-
         pm.show();
     }
 
@@ -406,7 +427,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
     @Override
     public void updateUI(List<CustomFile> fileList) {
-
+        txtPath.setText(FileManagerApp.getApp().getCurPath());
         mAdapter.setData(fileList);
     }
 

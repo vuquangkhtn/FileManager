@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <include layout="@layout/layout_action_bar"/>
+        <include layout="@layout/layout_path_bar"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_file_list"
             android:layout_width="match_parent"

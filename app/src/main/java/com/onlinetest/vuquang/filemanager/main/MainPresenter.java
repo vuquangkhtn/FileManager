@@ -223,6 +223,15 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         FLog.show("Sort list by File Type");
     }
 
+    @Override
+    public void onBackClicked() {
+        String curPath = FileManagerApp.getApp().getCurPath();
+        if(!curPath.equals(LocalPathUtils.EXTERNAL_STORAGE)) {
+            File file = new File(curPath);
+            updateList(file.getParentFile());
+        }
+    }
+
     private void updateList(File directory) {
         fileList.clear();
         FileManagerApp.getApp().setCurPath(directory.getPath());

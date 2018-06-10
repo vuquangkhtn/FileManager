@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_path"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal"
+    android:background="@android:color/white">
+
+    <ImageButton
+        android:id="@+id/imb_navi_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@android:color/white"
+        android:src="@drawable/ic_back" />
+
+    <TextView
+        android:id="@+id/tv_path"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/hint_text"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:ellipsize="start"
+        android:textSize="18dp" />
+</LinearLayout>
