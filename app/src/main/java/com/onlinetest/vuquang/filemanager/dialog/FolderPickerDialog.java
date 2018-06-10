@@ -40,6 +40,8 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
 
     private Button btnCancel, btnChoose;
 
+    private View rootView;
+
     private String chosenPath;
     private ChooseFolderDialogListener chooseFolderDialogListener;
 
@@ -47,6 +49,7 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = View.inflate(getActivity(), R.layout.dialog_choose_folder, null);
+        rootView = view;
         fileList = new ArrayList<>();
         chosenPath = LocalPathUtils.EXTERNAL_STORAGE;
 
@@ -99,14 +102,6 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
         openDirectory(new File(chosenPath));
     }
 
-    public void setChooseFolderDialogListener(ChooseFolderDialogListener chooseFolderDialogListener) {
-        this.chooseFolderDialogListener = chooseFolderDialogListener;
-    }
-
-    public interface ChooseFolderDialogListener {
-        void onFolderChosen(String path);
-    }
-
     private void openDirectory(File directory) {
         fileList.clear();
         chosenPath = directory.getPath();
@@ -119,12 +114,17 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
                 CustomFile customFile = new CustomFile(childFile.getPath());
                 fileList.add(customFile);
             }
+            if(fileList.size() == 0) {
+                setEmptyMode(true);
+            } else {
+                setEmptyMode(false);
+                sortListByFileType(fileList);
+                mAdapter.setData(fileList);
+            }
         } else {
-//            getMvpView().updateEmptyListUI();
+            setEmptyMode(true);
         }
-        sortListByFileType(fileList);
         tvPath.setText(chosenPath);
-        mAdapter.setData(fileList);
     }
 
     private void sortListByFileType(List<CustomFile> fileList) {
@@ -146,5 +146,20 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
             }
         });
 
+    }
+
+    public void setEmptyMode(boolean isEnable) {
+        ViewGroup dataView = rootView.findViewById(R.id.layout_empty);
+        if (dataView != null) {
+            dataView.setVisibility(isEnable ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    public void setChooseFolderDialogListener(ChooseFolderDialogListener chooseFolderDialogListener) {
+        this.chooseFolderDialogListener = chooseFolderDialogListener;
+    }
+
+    public interface ChooseFolderDialogListener {
+        void onFolderChosen(String path);
     }
 }

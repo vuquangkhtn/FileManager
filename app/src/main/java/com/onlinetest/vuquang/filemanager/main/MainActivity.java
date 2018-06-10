@@ -36,9 +36,6 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements MainMvpView{
     private static final String TAG = "MainActivity";
 
-    public static final int LIST_MODE = 0;
-    public static final int GRID_MODE = 1;
-
     private String[] arrRadioBtnName = {"Name", "Created Time", "Last Modified", "Last Opened Time", "File Type"};
     private int[] arrRadioBtnId = {100, 101, 102, 103, 104};
 
