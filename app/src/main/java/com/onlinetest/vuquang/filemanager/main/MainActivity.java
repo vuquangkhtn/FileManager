@@ -25,8 +25,8 @@ import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.base.BaseActivity;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.dialog.FolderPickerDialog;
 import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
-import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     private TextView txtTitle,txtPath;
     private View layoutPath;
     private PopupMenu pm;
+
     private MainMvpPresenter<MainMvpView> mPresenter;
 
     @Override
@@ -158,13 +159,27 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             }
 
             @Override
-            public void onMoveClicked(CustomFile file) {
-                showChoseDesFolderDialog(file);
+            public void onMoveClicked(final CustomFile file) {
+                FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
+                    @Override
+                    public void onFolderChosen(String path) {
+                        mPresenter.moveFile(file.getPath(), path);
+                    }
+                });
+                folderPickerDialog.show(getSupportFragmentManager(),TAG);
             }
 
             @Override
-            public void onCopyClicked(CustomFile file) {
-                showChoseDesFolderDialog(file);
+            public void onCopyClicked(final CustomFile file) {
+                FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
+                    @Override
+                    public void onFolderChosen(String path) {
+                        mPresenter.copyFile(file.getPath(), path);
+                    }
+                });
+                folderPickerDialog.show(getSupportFragmentManager(),TAG);
             }
 
             @Override
@@ -287,22 +302,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         });
 
         builder.show();
-    }
-
-    private void showChoseDesFolderDialog(CustomFile file) {
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("*/*");
-//        intent.putExtra("srcFile", file.getPath());
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//
-//        try {
-//            startActivityForResult(
-//                    Intent.createChooser(intent, "Select a Folder"),
-//                    FILE_SELECT_CODE);
-//        } catch (android.content.ActivityNotFoundException ex) {
-//            // Potentially direct the user to the Market with a Dialog
-//            showMessage("Please install a File Manager.");
-//        }
     }
 
     private void showCreateFileDialog(String title) {

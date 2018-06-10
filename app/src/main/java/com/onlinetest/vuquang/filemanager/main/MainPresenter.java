@@ -40,7 +40,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         } else {
             getMvpView().showMessage("Undo successful");
             //update list at current dir
-            updateList(new File(FileManagerApp.getApp().getCurPath()));
+            openDirectory(new File(FileManagerApp.getApp().getCurPath()));
         }
     }
 
@@ -51,14 +51,14 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         }else {
             getMvpView().showMessage("Redo successful");
             //update list at current dir
-            updateList(new File(FileManagerApp.getApp().getCurPath()));
+            openDirectory(new File(FileManagerApp.getApp().getCurPath()));
         }
     }
 
     @Override
     public void loadExternalStorage() {
         File file = FileHelper.getFile(LocalPathUtils.EXTERNAL_STORAGE);
-        updateList(file);
+        openDirectory(file);
     }
 
     @Override
@@ -71,13 +71,13 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void loadRecycleBin() {
         File file = FileHelper.getRecycleBin();
-        updateList(file);
+        openDirectory(file);
     }
 
     @Override
     public void openFile(CustomFile file) {
         if(file.getFile().isDirectory()) {
-            updateList(file.getFile());
+            openDirectory(file.getFile());
             FLog.show("browse directory "+file.getPath());
         } else {
             if(getMvpView().openFile(file)) {
@@ -95,7 +95,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             getMvpView().onError("Delete failed");
         } else {
             File parent = file.getFile().getParentFile();
-            updateList(parent);
+            openDirectory(parent);
             getMvpView().showMessage("Delete successful");
         }
     }
@@ -106,7 +106,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             getMvpView().onError("Permanently Delete failed");
         } else {
             File parent = file.getFile().getParentFile();
-            updateList(parent);
+            openDirectory(parent);
             getMvpView().showMessage("Permanently Delete successful");
         }
     }
@@ -116,7 +116,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new CopyAction(srcFile, desPath))) {
             getMvpView().onError("Copy failed");
         } else {
-            updateList(new File(desPath));
+            openDirectory(new File(desPath));
             getMvpView().showMessage("Copy successful");
         }
     }
@@ -126,7 +126,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new MoveAction(srcFile, desPath))) {
             getMvpView().onError("Move failed");
         } else {
-            updateList(new File(desPath));
+            openDirectory(new File(desPath));
             getMvpView().showMessage("Move successful");
         }
     }
@@ -138,7 +138,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new CreateFileAction(filePath))) {
             getMvpView().onError("Create failed");
         } else {
-            updateList(new File(curPath));
+            openDirectory(new File(curPath));
             getMvpView().showMessage("Create successful");
         }
     }
@@ -150,7 +150,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new CreateFolderAction(filePath))) {
             getMvpView().onError("Create failed");
         } else {
-            updateList(new File(curPath));
+            openDirectory(new File(curPath));
             getMvpView().showMessage("Create successful");
         }
     }
@@ -177,7 +177,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 //                return time1.compareTo(time2);
 //            }
 //        });
-//        updateList(new File(FileManagerApp.getApp().getCurPath()));
+//        openDirectory(new File(FileManagerApp.getApp().getCurPath()));
         getMvpView().showMessage("This function is not ready");
         FLog.show("Sort list by Created Name");
     }
@@ -198,7 +198,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByOpenedTime() {
-        updateList(new File(FileManagerApp.getApp().getCurPath()));
+        openDirectory(new File(FileManagerApp.getApp().getCurPath()));
         Collections.sort(fileList, new Comparator<CustomFile>() {
             @Override
             public int compare(CustomFile o1, CustomFile o2) {
@@ -213,6 +213,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByFileType() {
+        defaultSort();
+        FLog.show("Sort list by File Type");
+    }
+
+    private void defaultSort() {//File Type
         Collections.sort(fileList, new Comparator<CustomFile>() {
             @Override
             public int compare(CustomFile o1, CustomFile o2) {
@@ -231,7 +236,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             }
         });
         getMvpView().updateUI(fileList);
-        FLog.show("Sort list by File Type");
     }
 
     @Override
@@ -239,11 +243,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         String curPath = FileManagerApp.getApp().getCurPath();
         if(!curPath.equals(LocalPathUtils.EXTERNAL_STORAGE)) {
             File file = new File(curPath);
-            updateList(file.getParentFile());
+            openDirectory(file.getParentFile());
         }
     }
 
-    private void updateList(File directory) {
+    private void openDirectory(File directory) {
         fileList.clear();
         FileManagerApp.getApp().setCurPath(directory.getPath());
         if(directory.listFiles() != null && directory.listFiles().length != 0) {
@@ -258,6 +262,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         } else {
             getMvpView().updateEmptyListUI();
         }
-        sortListByFileType();
+        defaultSort();
     }
 }

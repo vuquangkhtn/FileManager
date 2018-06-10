@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <include layout="@layout/layout_path_bar"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_folder_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ecf0f1">
+    </android.support.v7.widget.RecyclerView>
+    <FrameLayout
+        android:paddingRight="@dimen/d20"
+        android:paddingLeft="@dimen/d20"
+        android:paddingBottom="@dimen/d10"
+        android:paddingTop="@dimen/d10"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|left"
+            android:background="@drawable/bg_btn_blue"
+            android:textColor="@android:color/holo_blue_light"
+            android:padding="@dimen/d10"
+            android:text="Choose"/>
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|right"
+            android:background="@drawable/bg_btn_blue"
+            android:textColor="@android:color/holo_blue_light"
+            android:padding="@dimen/d10"
+            android:text="Cancel"/>
+    </FrameLayout>
+</LinearLayout>

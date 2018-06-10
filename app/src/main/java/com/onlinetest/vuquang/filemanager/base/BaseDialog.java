@@ -124,7 +124,7 @@ public abstract class BaseDialog extends DialogFragment implements DialogMvpView
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.getWindow().setLayout(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT);
         }
         dialog.setCanceledOnTouchOutside(false);
 
