@@ -1,6 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main.adapter;
 
 import android.content.Context;
+import android.opengl.Visibility;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,7 +13,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.onlinetest.vuquang.filemanager.R;
+import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -73,15 +76,19 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         holder.tvName.setText(file.getName());
         holder.tvInfo.setText(file.getInfo());
         boolean knownType = false;
-        for (int i=0;i<arrFileType.length;i++) {
-            if(file.getTypeName().toLowerCase().equals(arrFileType[i])) {
-                holder.imvIcon.setBackgroundResource(arrFileIco[i]);
-                knownType = true;
-                break;
+        if(file.getFile().isDirectory()) {
+            holder.imvIcon.setBackgroundResource(arrFileIco[0]);
+        } else {
+            for (int i=0;i<arrFileType.length;i++) {
+                if(file.getTypeName().toLowerCase().equals(arrFileType[i])) {
+                    holder.imvIcon.setBackgroundResource(arrFileIco[i]);
+                    knownType = true;
+                    break;
+                }
             }
-        }
-        if(!knownType) {
-            holder.imvIcon.setBackgroundResource(R.drawable.ic_unknow_file);
+            if(!knownType) {
+                holder.imvIcon.setBackgroundResource(R.drawable.ic_unknow_file);
+            }
         }
 
         holder.imbMore.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +116,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        pm.getMenuInflater().inflate(R.menu.menu_file_popup, pm.getMenu());
+        if(!FileManagerApp.getApp().getCurPath().equals(LocalPathUtils.RECYCLE_BIN_DIR)) {
+            pm.getMenuInflater().inflate(R.menu.menu_file_popup, pm.getMenu());
+        } else {
+
+            pm.getMenuInflater().inflate(R.menu.menu_recycle_file_popup, pm.getMenu());
+        }
         pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

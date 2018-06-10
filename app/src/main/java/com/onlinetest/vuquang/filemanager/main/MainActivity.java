@@ -56,27 +56,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         txtTitle = findViewById(R.id.tv_title);
         mDrawer = findViewById(R.id.drawer_layout);
 
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        switch(menuItem.getItemId()) {
-                            case R.id.nav_quick_access:
-                                mPresenter.loadQuickAccess();
-                                break;
-                            case R.id.nav_storage:
-                                mPresenter.loadExternalStorage();
-                                break;
-                            case R.id.nav_recycle_bin:
-                                mPresenter.loadRecycleBin();
-                                break;
-                        }
-                        updateMenuItem(menuItem);
-                        return true;
-                    }
-                });
-
         imbGridMode = findViewById(R.id.imb_navi_grid_mode);
         imbGridMode.setVisibility(View.VISIBLE);
         imbGridMode.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +89,31 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 showPopupMenu(view);
             }
         });
+
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        switch(menuItem.getItemId()) {
+                            case R.id.nav_quick_access:
+                                mPresenter.loadQuickAccess();
+                                imbMore.setVisibility(View.GONE);
+                                break;
+                            case R.id.nav_storage:
+                                mPresenter.loadExternalStorage();
+                                imbMore.setVisibility(View.VISIBLE);
+                                break;
+                            case R.id.nav_recycle_bin:
+                                mPresenter.loadRecycleBin();
+                                imbMore.setVisibility(View.GONE);
+                                break;
+                        }
+                        updateMenuItem(menuItem);
+                        return true;
+                    }
+                });
+
 
         rvFileList = findViewById(R.id.rv_file_list);
         rvFileList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

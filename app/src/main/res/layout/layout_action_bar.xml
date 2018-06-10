@@ -27,6 +27,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginLeft="@dimen/d10"
+        android:layout_marginRight="@dimen/d10"
         android:layout_gravity="center_vertical"
         android:background="@android:color/holo_blue_light"
         android:src="@drawable/ic_list"
@@ -36,7 +37,8 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginLeft="@dimen/d10"
-        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/d10"
+        android:layout_gravity="center_vertical|end"
         android:background="@android:color/holo_blue_light"
         android:src="@drawable/ic_grid"/>
     <ImageButton
@@ -46,5 +48,6 @@
         android:layout_marginLeft="@dimen/d10"
         android:layout_gravity="end"
         android:background="@android:color/holo_blue_light"
-        android:src="@drawable/ic_action_more_white" />
+        android:src="@drawable/ic_action_more_white"
+        android:visibility="gone"/>
 </LinearLayout>
