@@ -5,6 +5,8 @@ import android.content.Context;
 import com.onlinetest.vuquang.filemanager.data.dao.OpenedFileDAO;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -47,4 +49,21 @@ public class CustomFileManager {
         return dao.getAllOpenedFiles();
     }
 
+    public List<CustomFile> getRecentFile() {
+        List<CustomFile> recentFiles = new ArrayList<>();
+
+        for (CustomFile file:getAllOpenedFile()) {
+            if(System.currentTimeMillis() - file.getLastOpenedTime() <= getMillisOf(2)) {
+                recentFiles.add(file);
+            }
+        }
+
+        return recentFiles;
+
+
+    }
+
+    public long getMillisOf(int days) {
+        return 1000*60*60*24*days;
+    }
 }

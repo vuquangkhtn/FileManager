@@ -167,4 +167,8 @@ public class FileHelper {
         return file;
     }
 
+    public static File getRecycleBin() {
+        return getFile(LocalPathUtils.RECYCLE_BIN_DIR);
+    }
+
 }

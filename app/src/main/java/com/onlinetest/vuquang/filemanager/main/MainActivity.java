@@ -2,8 +2,6 @@ package com.onlinetest.vuquang.filemanager.main;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -18,6 +16,7 @@ import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -62,7 +61,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                                 mPresenter.loadExternalStorage();
                                 break;
                             case R.id.nav_recycle_bin:
-                                mPresenter.recycleBin();
+                                mPresenter.loadRecycleBin();
                                 break;
                         }
                         updateMenuItem(menuItem);
@@ -109,8 +108,44 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         mAdapter = new FileAdapter(this);
         rvFileList.setAdapter(mAdapter);
 
+        mAdapter.setFileItemListener(new FileAdapter.FileItemListener() {
+            @Override
+            public void onOpenClicked(CustomFile file) {
+                mPresenter.openFile(file);
+            }
+
+            @Override
+            public void onDeleteClicked(CustomFile file) {
+                mPresenter.deleteFile(file);
+            }
+
+            @Override
+            public void onPermanentlyDeleteClicked(CustomFile file) {
+                mPresenter.permanentlyDeleteFile(file);
+            }
+
+            @Override
+            public void onMoveClicked(CustomFile file) {
+                showChoseDesFolderDialog();
+            }
+
+            @Override
+            public void onCopyClicked(CustomFile file) {
+                showChoseDesFolderDialog();
+            }
+
+            @Override
+            public void onPropertiesClicked(CustomFile file) {
+                mPresenter.showProperties(file);
+            }
+        });
+
         mPresenter.loadQuickAccess();
         navigationView.setCheckedItem(R.id.nav_quick_access);
+    }
+
+    private void showChoseDesFolderDialog() {
+
     }
 
     private void updateMenuItem(MenuItem menuItem) {
@@ -190,5 +225,10 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     public void updateUI(List<CustomFile> fileList) {
 
         mAdapter.setData(fileList);
+    }
+
+    @Override
+    public void openFile(File file) {
+
     }
 }

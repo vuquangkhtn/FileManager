@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.onlinetest.vuquang.filemanager.R;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -42,6 +43,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             R.drawable.ic_xls,
             R.drawable.ic_zip};
 
+    private FileItemListener fileItemListener;
+
     public FileAdapter(Context context) {
         this.mContext = context;
     }
@@ -58,7 +61,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
     @Override
     public void onBindViewHolder(FileHolder holder, int position) {
-        CustomFile file = fileList.get(position);
+        final CustomFile file = fileList.get(position);
         holder.tvName.setText(file.getName());
         holder.tvInfo.setText(file.getInfo());
         boolean knownType = false;
@@ -76,12 +79,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         holder.imbMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopupMenu(v);
+                showPopupMenu(v, file);
             }
         });
     }
 
-    private void showPopupMenu(View v) {
+    private void showPopupMenu(View v, final CustomFile file) {
         PopupMenu pm = new PopupMenu(mContext, v);
         try {
             Field[] fields = pm.getClass().getDeclaredFields();
@@ -104,21 +107,27 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_open: {
+                        fileItemListener.onOpenClicked(file);
                         return true;
                     }
                     case R.id.action_delete: {
+                        fileItemListener.onDeleteClicked(file);
                         return true;
                     }
                     case R.id.action_permanently_delete: {
+                        fileItemListener.onPermanentlyDeleteClicked(file);
                         return true;
                     }
                     case R.id.action_copy_to: {
+                        fileItemListener.onCopyClicked(file);
                         return true;
                     }
                     case R.id.action_move_to: {
+                        fileItemListener.onMoveClicked(file);
                         return true;
                     }
                     case R.id.action_properties: {
+                        fileItemListener.onPropertiesClicked(file);
                         return true;
                     }
                     default:{
@@ -138,6 +147,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         }
         return 0;
     }
+
+    public void setFileItemListener(FileItemListener fileItemListener) {
+        this.fileItemListener = fileItemListener;
+    }
+
     public class FileHolder extends RecyclerView.ViewHolder {
         private ImageView imvIcon;
         private TextView tvName;
@@ -150,5 +164,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
             tvInfo = itemView.findViewById(R.id.tv_file_info);
             imbMore = itemView.findViewById(R.id.imb_more);
         }
+    }
+
+    public interface FileItemListener {
+        void onOpenClicked(CustomFile file);
+        void onDeleteClicked(CustomFile file);
+        void onPermanentlyDeleteClicked(CustomFile file);
+        void onMoveClicked(CustomFile file);
+        void onCopyClicked(CustomFile file);
+        void onPropertiesClicked(CustomFile file);
     }
 }

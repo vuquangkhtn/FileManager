@@ -26,11 +26,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void loadExternalStorage() {
         File file = FileHelper.getFile(LocalPathUtils.EXTERNAL_STORAGE);
-        for (File childFile:file.listFiles()) {
-            CustomFile customFile = new CustomFile(childFile.getPath());
-            customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
-            fileList.add(customFile);
-        }
+        updateList(file);
         getMvpView().updateUI(fileList);
     }
 
@@ -50,11 +46,50 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void loadQuickAccess() {
+        fileList = getDataManager().getCustomFileManager().getRecentFile();
+        getMvpView().updateUI(fileList);
+    }
+
+    @Override
+    public void loadRecycleBin() {
+        File file = FileHelper.getRecycleBin();
+        updateList(file);
+        getMvpView().updateUI(fileList);
+    }
+
+    @Override
+    public void openFile(CustomFile file) {
+        if(file.getFile().isDirectory()) {
+            updateList(file.getFile());
+        } else {
+            getMvpView().openFile(file.getFile());
+        }
+    }
+
+    @Override
+    public void deleteFile(CustomFile file) {
 
     }
 
     @Override
-    public void recycleBin() {
+    public void permanentlyDeleteFile(CustomFile file) {
 
+    }
+
+    @Override
+    public void showProperties(CustomFile file) {
+
+    }
+
+    private void updateList(File file) {
+        if(file.listFiles() == null) {
+            fileList.clear();
+        } else {
+            for (File childFile:file.listFiles()) {
+                CustomFile customFile = new CustomFile(childFile.getPath());
+                customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
+                fileList.add(customFile);
+            }
+        }
     }
 }
