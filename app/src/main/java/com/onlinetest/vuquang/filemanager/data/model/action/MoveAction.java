@@ -3,6 +3,7 @@ package com.onlinetest.vuquang.filemanager.data.model.action;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 
+import java.io.File;
 import java.text.MessageFormat;
 
 /**
@@ -11,16 +12,16 @@ import java.text.MessageFormat;
 
 public class MoveAction implements FileAction {
     private String srcPath;
-    private String desPath;
+    private String desDir;
 
-    public MoveAction(String srcPath, String desPath) {
+    public MoveAction(String srcPath, String desDir) {
         this.srcPath = srcPath;
-        this.desPath = desPath;
+        this.desDir = desDir;
     }
 
     @Override
     public boolean execute() {
-        if(FileHelper.moveFile(srcPath, desPath)) {
+        if(FileHelper.moveFile(srcPath, desDir)) {
             logMessage();
             return true;
         }
@@ -29,11 +30,12 @@ public class MoveAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Move from {0} to {1}", srcPath, desPath));
+        FLog.show(MessageFormat.format("Move from {0} to {1}", srcPath, desDir));
     }
 
     @Override
     public boolean undo() {
-        return FileHelper.moveFile(desPath,srcPath);
+        return FileHelper.moveFile(desDir+ File.separator+FileHelper.getFileName(srcPath)
+                ,FileHelper.getParentDir(srcPath));
     }
 }

@@ -3,6 +3,7 @@ package com.onlinetest.vuquang.filemanager.data.model.action;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 
+import java.io.File;
 import java.text.MessageFormat;
 
 /**
@@ -32,6 +33,6 @@ public class CopyAction implements FileAction {
 
     @Override
     public boolean undo() {
-        return FileHelper.removeFile(desDir);
+        return FileHelper.removeFile(desDir+ File.separator + FileHelper.getFileName(srcPath));
     }
 }

@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
 /**
@@ -86,38 +88,44 @@ public class FileHelper {
         }
     }
 
-    private static void copyFile(File sourceFile, File destFile) {
+    private static boolean copyFile(File sourceFile, File destFile) {
         if (!destFile.getParentFile().exists()) {
-            if(destFile.getParentFile().mkdirs()) {
+            if(!destFile.getParentFile().mkdirs()) {
                 Log.d(TAG,"create parent folder failed");
-                return;
-            }
-        }
-
-        if (!destFile.exists()) {
-            try {
-                if(destFile.createNewFile()) {
-                    Log.d(TAG,"create new file failed");
-                    return;
+                return false;
+            } else {
+                if (!destFile.exists()) {
+                    try {
+                        if(!destFile.createNewFile()) {
+                            Log.d(TAG,"create new file failed");
+                            return false;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
 
+        InputStream is = null;
+        OutputStream os = null;
+        boolean copyFile;
         try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
-            destination.transferFrom(source, 0, source.size());
-
-            source.close();
-            destination.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            is = new FileInputStream(sourceFile);
+            os = new FileOutputStream(destFile);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+            is.close();
+            os.close();
+            copyFile = true;
+        } catch(Exception e) {
+            copyFile = false;
         }
+        return copyFile;
     }
 
     static boolean appendStrToFile(String path, String message) {
@@ -161,6 +169,10 @@ public class FileHelper {
     }
 
     public static boolean moveFile(String srcPath, String desDir) {
+        File file = new File(desDir);
+        if(!file.exists() || file.isFile()) {
+            return false;
+        }
         copyFileOrDirectory(srcPath, desDir);
         return removeFile(srcPath);
     }
