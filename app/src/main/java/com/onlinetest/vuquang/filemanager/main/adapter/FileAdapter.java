@@ -116,11 +116,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(!FileManagerApp.getApp().getCurPath().equals(LocalPathUtils.RECYCLE_BIN_DIR)) {
-            pm.getMenuInflater().inflate(R.menu.menu_file_popup, pm.getMenu());
-        } else {
-
+        if(FileManagerApp.getApp().getCurPath().equals(LocalPathUtils.RECYCLE_BIN_DIR)) {
             pm.getMenuInflater().inflate(R.menu.menu_recycle_file_popup, pm.getMenu());
+        } else {
+            pm.getMenuInflater().inflate(R.menu.menu_file_popup, pm.getMenu());
         }
         pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

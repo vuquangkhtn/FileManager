@@ -22,8 +22,6 @@ public interface MainMvpPresenter<V extends MainMvpView> extends MvpPresenter<V>
 
     void permanentlyDeleteFile(CustomFile file);
 
-    void showProperties(CustomFile file);
-
     void doCopy(String srcFile, String path);
 
     void createFile(String s);

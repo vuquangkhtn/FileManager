@@ -69,14 +69,19 @@ public class CustomFile {
     }
 
     public String getInfo() {
-        return MessageFormat.format("{0} ({1} items)",getLastModified(), getFileSize());
+        return MessageFormat.format("{0} ({1})",getLastModified(), getFileSize());
     }
 
     public String getLastModified() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(file.lastModified());
-        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy,HH:mm");
-        return format1.format(cal.getTime());
+        long time = file.lastModified();
+        if(time == 0) {
+            return "None";
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(time);
+            SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy,HH:mm");
+            return format1.format(cal.getTime());
+        }
     }
 
     public String getFileSize() {
@@ -85,9 +90,9 @@ public class CustomFile {
             if(file.list() != null) {
                 size = file.list().length;
             }
-            return String.valueOf(size);
+            return String.valueOf(size + " items");
         } else {
-            return String.valueOf(file.getUsableSpace());
+            return String.valueOf(getDataSize());
         }
     }
 
@@ -102,5 +107,33 @@ public class CustomFile {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
         return type;
+    }
+
+    private String getDataSize() {
+        String[] measure = {"B", "KB", "MB", "GB"};
+        int countMeasure = 0;
+        double size = file.length();
+        while(size > 1024 && countMeasure < 4) {
+            size = size / 1024;
+            countMeasure++;
+        }
+        return String.format("%.2f %s",size, measure[countMeasure]);
+    }
+
+    public String getCreatedDate() {
+        return "null";
+    }
+
+    public String getStrLastOpenedTime() {
+        long time = getLastOpenedTime();
+        if(time == 0) {
+            return "None";
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(time);
+            SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy,HH:mm");
+            return format1.format(cal.getTime());
+        }
+
     }
 }

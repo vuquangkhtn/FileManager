@@ -48,6 +48,5 @@
         android:layout_marginLeft="@dimen/d10"
         android:layout_gravity="end"
         android:background="@android:color/holo_blue_light"
-        android:src="@drawable/ic_action_more_white"
-        android:visibility="gone"/>
+        android:src="@drawable/ic_action_more_white"/>
 </LinearLayout>

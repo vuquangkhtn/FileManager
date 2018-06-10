@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -44,7 +45,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     private NavigationView navigationView;
     private ImageButton imbMenu, imbGridMode, imbListMode, imbMore;
     private TextView txtTitle;
-
+    PopupMenu pm;
     private MainMvpPresenter<MainMvpView> mPresenter;
 
     @Override
@@ -92,6 +93,8 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             }
         });
 
+        recreatePopupLayout(null);
+
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -100,11 +103,13 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                         switch(menuItem.getItemId()) {
                             case R.id.nav_quick_access:
                                 mPresenter.loadQuickAccess();
-                                imbMore.setVisibility(View.GONE);
+                                imbMore.setVisibility(View.VISIBLE);
+                                recreatePopupLayout(menuItem);
                                 break;
                             case R.id.nav_storage:
                                 mPresenter.loadExternalStorage();
                                 imbMore.setVisibility(View.VISIBLE);
+                                recreatePopupLayout(menuItem);
                                 break;
                             case R.id.nav_recycle_bin:
                                 mPresenter.loadRecycleBin();
@@ -115,7 +120,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                         return true;
                     }
                 });
-
 
         rvFileList = findViewById(R.id.rv_file_list);
         rvFileList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -150,7 +154,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
             @Override
             public void onPropertiesClicked(CustomFile file) {
-                mPresenter.showProperties(file);
+                showPropertiesDialog(file);
             }
         });
 
@@ -181,7 +185,12 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     private void showPopupMenu(View v) {
-        PopupMenu pm = new PopupMenu(this, v);
+
+        pm.show();
+    }
+
+    private void recreatePopupLayout(MenuItem item) {
+        pm = new PopupMenu(this, imbMore);
         try {
             Field[] fields = pm.getClass().getDeclaredFields();
             for (Field field : fields) {
@@ -197,7 +206,11 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        pm.getMenuInflater().inflate(R.menu.menu_action_bar_popup, pm.getMenu());
+        if(item == null || item.getItemId() == R.id.nav_quick_access) {
+            pm.getMenuInflater().inflate(R.menu.menu_actionbar_quickaccess_popup, pm.getMenu());
+        } else {
+            pm.getMenuInflater().inflate(R.menu.menu_action_bar_popup, pm.getMenu());
+        }
         pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -229,7 +242,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
             }
         });
-        pm.show();
     }
 
     private void showCreateFolderDialog(String s) {
@@ -296,16 +308,55 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         builder.show();
     }
 
+    private void showPropertiesDialog(CustomFile file) {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("View Properties");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_properties, null);
+
+        TextView tvName = dialogView.findViewById(R.id.tv_name);
+        TextView tvLocation = dialogView.findViewById(R.id.tv_location);
+        TextView tvType = dialogView.findViewById(R.id.tv_type);
+        TextView tvFileSize = dialogView.findViewById(R.id.tv_file_size);
+        TextView tvModified = dialogView.findViewById(R.id.tv_modified_date);
+        TextView tvCreated = dialogView.findViewById(R.id.tv_created_date);
+        TextView tvOpenedDate = dialogView.findViewById(R.id.tv_last_opened_date);
+
+        tvName.setText(file.getName());
+        tvLocation.setText(file.getPath());
+        if(file.getExtension().isEmpty()) {
+            tvType.setText("Folder");
+        } else {
+            tvType.setText(file.getExtension());
+        }
+        tvFileSize.setText(file.getFileSize());
+        tvModified.setText(file.getLastModified());
+        tvCreated.setText(file.getCreatedDate());
+        tvOpenedDate.setText(file.getStrLastOpenedTime());
+
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialogBuilder.show();
+    }
+
     private void showSortOptionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sort Type");
 
         final RadioButton[] rb = new RadioButton[5];
         final RadioGroup rg = new RadioGroup(this); //create the RadioGroup
-        rg.setOrientation(RadioGroup.HORIZONTAL);//or RadioGroup.VERTICAL
+        rg.setOrientation(RadioGroup.VERTICAL);
+
         for(int i=0; i<5; i++){
             rb[i]  = new RadioButton(this);
             rb[i].setText(arrRadioBtnName[i]);
+            rb[i].setTextSize(22);
             rb[i].setId(arrRadioBtnId[i]);
             rg.addView(rb[i]);
         }
