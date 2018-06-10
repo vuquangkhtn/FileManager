@@ -39,13 +39,15 @@ public class FileHelper {
 
     public static boolean removeFile(String path) {
         File file = new File(path);
-        boolean deleteFile = file.delete();
-        if(!deleteFile) {
-            Log.d(TAG,"Can't delete file");
-            return false;
-        } else {
-            return true;
+        if(file.isDirectory()){
+            File[] files = file.listFiles();
+            if(null!=files){
+                for(File childFile: files) {
+                    removeFile(childFile.getPath());
+                }
+            }
         }
+        return(file.delete());
     }
 
     public static void copyFileOrDirectory(String srcFile, String dstDir) {
@@ -58,22 +60,22 @@ public class FileHelper {
         File src = new File(srcFile);
         File dst = new File(dstDir, src.getName());
 
-        try {
-            if (src.isDirectory()) {
-                for (String filePath : src.list()) {
-                    String src1 = (new File(src, filePath).getPath());
-                    String dst1 = dst.getPath();
-                    copyFileOrDirectory(src1, dst1);
-                }
-            } else {
-                copyFile(src, dst);
+        if (src.isDirectory()) {
+            if(!dst.exists()){
+                dst.mkdir();
+//                System.out.println("Directory copied from "+ src + "  to " + dstDir);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            for (String filePath : src.list()) {
+                String src1 = (new File(src, filePath).getPath());
+                String dst1 = dst.getPath();
+                copyFileOrDirectory(src1, dst1);
+            }
+        } else {
+            copyFile(src, dst);
         }
     }
 
-    private static void copyFile(File sourceFile, File destFile) throws IOException {
+    private static void copyFile(File sourceFile, File destFile) {
         if (!destFile.getParentFile().exists()) {
             if(destFile.getParentFile().mkdirs()) {
                 Log.d(TAG,"create parent folder failed");
@@ -82,9 +84,13 @@ public class FileHelper {
         }
 
         if (!destFile.exists()) {
-            if(destFile.createNewFile()) {
-                Log.d(TAG,"create new file failed");
-                return;
+            try {
+                if(destFile.createNewFile()) {
+                    Log.d(TAG,"create new file failed");
+                    return;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -95,15 +101,11 @@ public class FileHelper {
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(destFile).getChannel();
             destination.transferFrom(source, 0, source.size());
+
+            source.close();
+            destination.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            if (source != null) {
-                source.close();
-            }
-            if (destination != null) {
-                destination.close();
-            }
         }
     }
 
