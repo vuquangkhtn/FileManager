@@ -32,6 +32,8 @@ public interface MvpView {
 
     void hideLoading();
 
+    void onError(String message);
+
     void showMessage(String message);
 
     void showMessage(@StringRes int resId);

@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -45,6 +46,23 @@ public class BaseActivity extends AppCompatActivity implements MvpView, BaseFrag
     @Override
     public void showMessage(int resId) {
         showMessage(getString(resId));
+    }
+
+
+    public void showSnackBar(String message) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
+                message, Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+
+    @Override
+    public void onError(String message) {
+        if (message != null) {
+            showSnackBar(message);
+        } else {
+            showSnackBar(getString(R.string.some_error));
+        }
     }
 
     @Override
