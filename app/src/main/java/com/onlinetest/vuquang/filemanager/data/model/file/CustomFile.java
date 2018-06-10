@@ -1,5 +1,7 @@
 package com.onlinetest.vuquang.filemanager.data.model.file;
 
+import android.webkit.MimeTypeMap;
+
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 
 import java.io.File;
@@ -90,20 +92,15 @@ public class CustomFile {
     }
 
     public String getExtension() {
-        String extension = "";
-
-        int i = getName().lastIndexOf('.');
-        if (i > 0) {
-            extension = getName().substring(i+1);
-        }
-        return extension;
+        return MimeTypeMap.getFileExtensionFromUrl(getPath());
     }
 
-    public String getTypeName() {
-        if (getExtension().isEmpty()) {
-            return "Folder";
-        } else {
-            return getExtension();
+    public String getMimeType() {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(getPath());
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
+        return type;
     }
 }

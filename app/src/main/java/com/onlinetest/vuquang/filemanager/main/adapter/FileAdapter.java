@@ -30,9 +30,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     private List<CustomFile> fileList;
     private Context mContext;
 
-    private String[] arrFileType = {"folder","avi","doc","exe","jpg","html","mp3","mp4","pdf","png","txt","xls","zip"};
+    private String[] arrFileType = {"avi","doc","exe","jpg","html","mp3","mp4","pdf","png","txt","xls","zip"};
     private int[] arrFileIco = {
-            R.drawable.ic_folder,
             R.drawable.ic_avi,
             R.drawable.ic_doc,
             R.drawable.ic_exe,
@@ -77,18 +76,19 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         holder.tvInfo.setText(file.getInfo());
         boolean knownType = false;
         if(file.getFile().isDirectory()) {
-            holder.imvIcon.setBackgroundResource(arrFileIco[0]);
+            knownType = true;
+            holder.imvIcon.setBackgroundResource(R.drawable.ic_folder);
         } else {
             for (int i=0;i<arrFileType.length;i++) {
-                if(file.getTypeName().toLowerCase().equals(arrFileType[i])) {
+                if(file.getExtension().toLowerCase().equals(arrFileType[i])) {
                     holder.imvIcon.setBackgroundResource(arrFileIco[i]);
                     knownType = true;
                     break;
                 }
             }
-            if(!knownType) {
-                holder.imvIcon.setBackgroundResource(R.drawable.ic_unknow_file);
-            }
+        }
+        if(!knownType) {
+            holder.imvIcon.setBackgroundResource(R.drawable.ic_unknow_file);
         }
 
         holder.imbMore.setOnClickListener(new View.OnClickListener() {

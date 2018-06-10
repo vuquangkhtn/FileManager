@@ -364,7 +364,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         boolean openedFile = false;
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file.getFile()), file.getExtension());
+            intent.setDataAndType(Uri.fromFile(file.getFile()), file.getMimeType());
             startActivity(intent);
             openedFile = true;
         } catch (ActivityNotFoundException e) {
