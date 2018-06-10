@@ -9,16 +9,16 @@ import android.content.Context;
 public class AppDataManager {
     private static AppDataManager instance;
     private ActionManager actionManager;
-    private CustomFileManager customFileManager;
+    private OpenedFileManager openedFileManager;
 
-    public AppDataManager(ActionManager actionManager, CustomFileManager customFileManager) {
+    public AppDataManager(ActionManager actionManager, OpenedFileManager openedFileManager) {
         this.actionManager = actionManager;
-        this.customFileManager = customFileManager;
+        this.openedFileManager = openedFileManager;
     }
 
     public static AppDataManager getDataManager(Context context) {
         if(instance == null) {
-            instance = new AppDataManager(new ActionManager(), new CustomFileManager(context));
+            instance = new AppDataManager(new ActionManager(), new OpenedFileManager(context));
         }
         return instance;
     }
@@ -27,7 +27,7 @@ public class AppDataManager {
         return actionManager;
     }
 
-    public CustomFileManager getCustomFileManager() {
-        return customFileManager;
+    public OpenedFileManager getOpenedFileManager() {
+        return openedFileManager;
     }
 }

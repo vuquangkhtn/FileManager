@@ -13,10 +13,10 @@ import java.util.List;
  * Created by VuQuang on 6/9/2018.
  */
 
-public class CustomFileManager {
+public class OpenedFileManager {
     private OpenedFileDAO dao;
 
-    public CustomFileManager(Context context) {
+    public OpenedFileManager(Context context) {
         dao = new OpenedFileDAO(context);
     }
 
@@ -25,6 +25,17 @@ public class CustomFileManager {
         CustomFile file = new CustomFile(path);
         file.setLastOpenedTime(System.currentTimeMillis());
         return dao.insertOpenedFile(file);
+    }
+
+    public boolean updateOpenedFile(String oldPath, String curPath) {
+        if(contain(oldPath)) {
+            removeIfContain(oldPath);
+            CustomFile oldFile = new CustomFile(oldPath);
+            CustomFile curFile = new CustomFile(curPath);
+            curFile.setLastOpenedTime(oldFile.getLastOpenedTime());
+            return dao.insertOpenedFile(curFile);
+        }
+        return true;
     }
 
     public long getOpenTime(String path) {
@@ -36,13 +47,19 @@ public class CustomFileManager {
         return 0;
     }
 
-    private void removeIfContain(String path) {
+    public void removeIfContain(String path) {
+        if(contain(path)) {
+            dao.deleteOpenedFile(path);
+        }
+    }
+
+    private boolean contain(String path) {
         for (CustomFile file : getAllOpenedFile()) {
             if(file.getPath().equals(path)) {
-                dao.deleteOpenedFile(path);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     public List<CustomFile> getAllOpenedFile() {

@@ -63,7 +63,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void loadQuickAccess() {
-        fileList = getDataManager().getCustomFileManager().getRecentFile();
+        fileList = getDataManager().getOpenedFileManager().getRecentFile();
         FileManagerApp.getApp().setCurPath(LocalPathUtils.EXTERNAL_STORAGE);
         getMvpView().updateUI(fileList);
     }
@@ -81,7 +81,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             FLog.show("browse directory "+file.getPath());
         } else {
             if(getMvpView().openFile(file)) {
-                getDataManager().getCustomFileManager().addOpenedFile(file.getPath());
+                getDataManager().getOpenedFileManager().addOpenedFile(file.getPath());
                 FLog.show("open file "+file.getPath());
             } else {
                 getMvpView().showMessage("This file is not supported");
@@ -96,6 +96,10 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         } else {
             File parent = file.getFile().getParentFile();
             openDirectory(parent);
+            if(!getDataManager().getOpenedFileManager().updateOpenedFile(file.getPath(),
+                    LocalPathUtils.RECYCLE_BIN_DIR+File.separator+FileHelper.getFileName(file.getPath()))) {
+                getMvpView().showMessage("Can't update quick access");
+            }
             getMvpView().showMessage("Delete successful");
         }
     }
@@ -107,6 +111,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         } else {
             File parent = file.getFile().getParentFile();
             openDirectory(parent);
+            getDataManager().getOpenedFileManager().removeIfContain(file.getPath());
             getMvpView().showMessage("Permanently Delete successful");
         }
     }
@@ -127,6 +132,10 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             getMvpView().onError("Move failed");
         } else {
             openDirectory(new File(desPath));
+            if(!getDataManager().getOpenedFileManager().updateOpenedFile(srcFile,
+                    desPath+File.separator+FileHelper.getFileName(srcFile))) {
+                getMvpView().showMessage("Can't update quick access");
+            }
             getMvpView().showMessage("Move successful");
         }
     }
@@ -256,7 +265,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                     continue;
                 }
                 CustomFile customFile = new CustomFile(childFile.getPath());
-                customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
+                customFile.setLastOpenedTime(getDataManager().getOpenedFileManager().getOpenTime(childFile.getPath()));
                 fileList.add(customFile);
             }
         } else {
