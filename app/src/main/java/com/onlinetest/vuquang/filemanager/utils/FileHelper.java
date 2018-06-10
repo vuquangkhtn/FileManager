@@ -163,7 +163,8 @@ public class FileHelper {
     }
 
     public static File getFile(String path) {
-        return new File(path);
+        File file = new File(path);
+        return file;
     }
 
 }
