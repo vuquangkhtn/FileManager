@@ -62,6 +62,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     @Override
     public void onBindViewHolder(FileHolder holder, int position) {
         final CustomFile file = fileList.get(position);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fileItemListener.onOpenClicked(file);
+            }
+        });
+
         holder.tvName.setText(file.getName());
         holder.tvInfo.setText(file.getInfo());
         boolean knownType = false;
