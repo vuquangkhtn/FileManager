@@ -8,4 +8,10 @@ import com.onlinetest.vuquang.filemanager.base.MvpPresenter;
 
 public interface MainMvpPresenter<V extends MainMvpView> extends MvpPresenter<V> {
     void loadExternalStorage();
+    void onUndoClicked();
+    void onRedoClicked();
+
+    void loadQuickAccess();
+
+    void recycleBin();
 }

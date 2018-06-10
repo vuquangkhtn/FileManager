@@ -2,7 +2,10 @@ package com.onlinetest.vuquang.filemanager.main;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.view.ContextMenu;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,7 +16,10 @@ import com.onlinetest.vuquang.filemanager.R;
 import com.onlinetest.vuquang.filemanager.base.BaseActivity;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements MainMvpView{
@@ -23,6 +29,8 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     public static final int GRID_MODE = 1;
 
 
+    FileAdapter mAdapter;
+    RecyclerView rvFileList;
     private DrawerLayout mDrawer;
     private NavigationView navigationView;
     private ImageButton imbMenu, imbGridMode, imbListMode, imbMore;
@@ -34,7 +42,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         mPresenter = new MainPresenter<>(AppDataManager.getDataManager(this));
         mPresenter.onAttach(MainActivity.this);
@@ -49,12 +56,16 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch(menuItem.getItemId()) {
                             case R.id.nav_quick_access:
+                                mPresenter.loadQuickAccess();
                                 break;
                             case R.id.nav_storage:
+                                mPresenter.loadExternalStorage();
                                 break;
                             case R.id.nav_recycle_bin:
+                                mPresenter.recycleBin();
                                 break;
                         }
+                        updateMenuItem(menuItem);
                         return true;
                     }
                 });
@@ -92,7 +103,21 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 showPopupMenu(view);
             }
         });
-//        mPresenter.loadExternalStorage();
+
+        rvFileList = findViewById(R.id.rv_file_list);
+        rvFileList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mAdapter = new FileAdapter(this);
+        rvFileList.setAdapter(mAdapter);
+
+        mPresenter.loadQuickAccess();
+        navigationView.setCheckedItem(R.id.nav_quick_access);
+    }
+
+    private void updateMenuItem(MenuItem menuItem) {
+        txtTitle.setText(menuItem.getTitle());
+        menuItem.setChecked(true);
+        mDrawer.closeDrawers();
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, navigationView);
     }
 
     public void switchMode(int mode) {
@@ -112,13 +137,36 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
     private void showPopupMenu(View v) {
         PopupMenu pm = new PopupMenu(this, v);
-        pm.getMenuInflater().inflate(R.menu.menu_more_func_popup, pm.getMenu());
+        try {
+            Field[] fields = pm.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                if ("mPopup".equals(field.getName())) {
+                    field.setAccessible(true);
+                    Object menuPopupHelper = field.get(pm);
+                    Class<?> classPopupHelper = Class.forName(menuPopupHelper.getClass().getName());
+                    Method setForceIcons = classPopupHelper.getMethod("setForceShowIcon", boolean.class);
+                    setForceIcons.invoke(menuPopupHelper, true);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        pm.getMenuInflater().inflate(R.menu.menu_action_bar_popup, pm.getMenu());
         pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_sort_by: {
                         showSortOptionDialog();
+                        return true;
+                    }
+                    case R.id.action_undo: {
+                        mPresenter.onUndoClicked();
+                        return true;
+                    }
+                    case R.id.action_redo: {
+                        mPresenter.onRedoClicked();
                         return true;
                     }
                     default:{
@@ -134,7 +182,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     private void showSortOptionDialog() {
 
     }
-
     public void openDrawer() {
         mDrawer.openDrawer(navigationView);
     }
@@ -142,5 +189,6 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     @Override
     public void updateUI(List<CustomFile> fileList) {
 
+        mAdapter.setData(fileList);
     }
 }

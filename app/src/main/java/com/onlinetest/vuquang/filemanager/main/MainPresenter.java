@@ -26,11 +26,35 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void loadExternalStorage() {
         File file = FileHelper.getFile(LocalPathUtils.EXTERNAL_STORAGE);
-        for (String childFile:file.list()) {
-            CustomFile customFile = new CustomFile(childFile);
-            customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile));
+        for (File childFile:file.listFiles()) {
+            CustomFile customFile = new CustomFile(childFile.getPath());
+            customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
             fileList.add(customFile);
         }
         getMvpView().updateUI(fileList);
+    }
+
+    @Override
+    public void onUndoClicked() {
+        if(!getDataManager().getActionManager().undo()) {
+            getMvpView().onError("Can't undo");
+        }
+    }
+
+    @Override
+    public void onRedoClicked() {
+        if(!getDataManager().getActionManager().redo()) {
+            getMvpView().onError("Can't redo");
+        }
+    }
+
+    @Override
+    public void loadQuickAccess() {
+
+    }
+
+    @Override
+    public void recycleBin() {
+
     }
 }
