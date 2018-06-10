@@ -207,6 +207,14 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                         mPresenter.onRedoClicked();
                         return true;
                     }
+                    case R.id.action_create_file: {
+                        showCreateFileDialog();
+                        return true;
+                    }
+                    case R.id.action_create_folder: {
+                        showCreateFolderDialog();
+                        return true;
+                    }
                     default:{
                         return false;
                     }
@@ -215,6 +223,14 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             }
         });
         pm.show();
+    }
+
+    private void showCreateFolderDialog() {
+
+    }
+
+    private void showCreateFileDialog() {
+
     }
 
     private void showSortOptionDialog() {

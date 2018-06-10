@@ -5,6 +5,14 @@
         android:icon="@drawable/ic_sort"
         android:title="Sort by"/>
     <item
+        android:id="@+id/action_create_file"
+        android:icon="@drawable/ic_add_file"
+        android:title="Create File"/>
+    <item
+        android:id="@+id/action_create_folder"
+        android:icon="@drawable/ic_add_folder"
+        android:title="Create File"/>
+    <item
         android:id="@+id/action_undo"
         android:icon="@drawable/ic_undo"
         android:title="Undo"/>
