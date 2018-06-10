@@ -118,8 +118,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         }
         if(FileManagerApp.getApp().getCurPath().equals(LocalPathUtils.RECYCLE_BIN_DIR)) {
             pm.getMenuInflater().inflate(R.menu.menu_recycle_file_popup, pm.getMenu());
-        } else {
+        } else if(FileManagerApp.getApp().getCurPath().equals(LocalPathUtils.EXTERNAL_STORAGE)){
             pm.getMenuInflater().inflate(R.menu.menu_file_popup, pm.getMenu());
+        } else {
+            pm.getMenuInflater().inflate(R.menu.menu_quick_access_file_popup, pm.getMenu());
         }
         pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -169,6 +171,16 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
     public void setFileItemListener(FileItemListener fileItemListener) {
         this.fileItemListener = fileItemListener;
+    }
+
+    public void removeFile(CustomFile file) {
+        for (int i=0;i<fileList.size();i++) {
+            if(fileList.get(i).getPath().equals(file.getPath())) {
+                fileList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
     }
 
     public class FileHolder extends RecyclerView.ViewHolder {

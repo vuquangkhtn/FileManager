@@ -57,6 +57,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void loadExternalStorage() {
+        FileManagerApp.getApp().setCurPath(LocalPathUtils.EXTERNAL_STORAGE);
         File file = FileHelper.getFile(LocalPathUtils.EXTERNAL_STORAGE);
         openDirectory(file);
     }
@@ -64,8 +65,21 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void loadQuickAccess() {
         fileList = getDataManager().getOpenedFileManager().getRecentFile();
-        FileManagerApp.getApp().setCurPath(LocalPathUtils.EXTERNAL_STORAGE);
-        getMvpView().updateUI(fileList);
+        FileManagerApp.getApp().setCurPath("");
+        if(fileList != null && fileList.size() != 0) {
+            getMvpView().setEmptyMode(false);
+            Collections.sort(fileList, new Comparator<CustomFile>() {
+                @Override
+                public int compare(CustomFile o1, CustomFile o2) {
+                    Long time1 = o1.getLastOpenedTime();
+                    Long time2 = o2.getLastOpenedTime();
+                    return time2.compareTo(time1);
+                }
+            });
+            getMvpView().updateUI(fileList);
+        } else {
+            getMvpView().setEmptyMode(true);
+        }
     }
 
     @Override
@@ -94,8 +108,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new DeleteAction(file.getPath()))) {
             getMvpView().onError("Delete failed");
         } else {
-            File parent = file.getFile().getParentFile();
-            openDirectory(parent);
+            getMvpView().deleteFile(file);
             if(!getDataManager().getOpenedFileManager().updateOpenedFile(file.getPath(),
                     LocalPathUtils.RECYCLE_BIN_DIR+File.separator+FileHelper.getFileName(file.getPath()))) {
                 getMvpView().showMessage("Can't update quick access");
@@ -109,8 +122,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new PermanentlyDeleteAction(file.getPath()))) {
             getMvpView().onError("Permanently Delete failed");
         } else {
-            File parent = file.getFile().getParentFile();
-            openDirectory(parent);
+            getMvpView().deleteFile(file);
             getDataManager().getOpenedFileManager().removeIfContain(file.getPath());
             getMvpView().showMessage("Permanently Delete successful");
         }
@@ -260,6 +272,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         fileList.clear();
         FileManagerApp.getApp().setCurPath(directory.getPath());
         if(directory.listFiles() != null && directory.listFiles().length != 0) {
+            getMvpView().setEmptyMode(false);
             for (File childFile:directory.listFiles()) {
                 if(childFile.getName().startsWith(".")) {//hidden file
                     continue;
@@ -269,7 +282,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                 fileList.add(customFile);
             }
         } else {
-            getMvpView().updateEmptyListUI();
+            getMvpView().setEmptyMode(true);
         }
         defaultSort();
     }

@@ -13,6 +13,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -116,7 +117,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                         switch(menuItem.getItemId()) {
                             case R.id.nav_quick_access:
                                 mPresenter.loadQuickAccess();
-                                imbMore.setVisibility(View.VISIBLE);
+                                imbMore.setVisibility(View.GONE);
                                 layoutPath.setVisibility(View.GONE);
                                 recreatePopupLayout(menuItem);
                                 break;
@@ -194,6 +195,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         layoutPath.setVisibility(View.GONE);
         recreatePopupLayout(null);
 
+        txtTitle.setText("Quick Access");
         mPresenter.loadQuickAccess();
         navigationView.setCheckedItem(R.id.nav_quick_access);
 
@@ -445,7 +447,15 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     @Override
-    public void updateEmptyListUI() {
+    public void setEmptyMode(boolean isEnable) {
+        ViewGroup dataView = findViewById(R.id.layout_empty);
+        if (dataView != null) {
+            dataView.setVisibility(isEnable ? View.VISIBLE : View.GONE);
+        }
+    }
 
+    @Override
+    public void deleteFile(CustomFile file) {
+        mAdapter.removeFile(file);
     }
 }
