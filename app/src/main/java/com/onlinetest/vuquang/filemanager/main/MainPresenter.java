@@ -15,6 +15,8 @@ import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -76,8 +78,12 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             updateList(file.getFile());
             FLog.show("browse directory "+file.getPath());
         } else {
-            getMvpView().openFile(file);
-            FLog.show("open file "+file.getPath());
+            if(getMvpView().openFile(file)) {
+                getDataManager().getCustomFileManager().addOpenedFile(file.getPath());
+                FLog.show("open file "+file.getPath());
+            } else {
+                getMvpView().showMessage("This file is not supported");
+            }
         }
     }
 
@@ -144,27 +150,69 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByName() {
-
+        Collections.sort(fileList, new Comparator<CustomFile>() {
+            @Override
+            public int compare(CustomFile o1, CustomFile o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+        FLog.show("Sort list by Name");
+        getMvpView().updateUI(fileList);
     }
 
     @Override
     public void sortListByCreatedTime() {
-
+//        Collections.sort(fileList, new Comparator<CustomFile>() {
+//            @Override
+//            public int compare(CustomFile o1, CustomFile o2) {
+//                Long time1 = o1.getFile().lastModified();
+//                Long time2 = o2.getFile().lastModified();
+//                return time1.compareTo(time2);
+//            }
+//        });
+//        updateList(new File(FileManagerApp.getApp().getCurPath()));
+        getMvpView().showMessage("This function is not ready");
+        FLog.show("Sort list by Created Name");
     }
 
     @Override
     public void sortListByModifed() {
-
+        Collections.sort(fileList, new Comparator<CustomFile>() {
+            @Override
+            public int compare(CustomFile o1, CustomFile o2) {
+                Long time1 = o1.getFile().lastModified();
+                Long time2 = o2.getFile().lastModified();
+                return time2.compareTo(time1);
+            }
+        });
+        getMvpView().updateUI(fileList);
+        FLog.show("Sort list by Last Modified");
     }
 
     @Override
     public void sortListByOpenedTime() {
-
+        Collections.sort(fileList, new Comparator<CustomFile>() {
+            @Override
+            public int compare(CustomFile o1, CustomFile o2) {
+                Long time1 = o1.getLastOpenedTime();
+                Long time2 = o2.getLastOpenedTime();
+                return time1.compareTo(time2);
+            }
+        });
+        getMvpView().updateUI(fileList);
+        FLog.show("Sort list by Opened Time");
     }
 
     @Override
     public void sortListByFileType() {
-
+        Collections.sort(fileList, new Comparator<CustomFile>() {
+            @Override
+            public int compare(CustomFile o1, CustomFile o2) {
+                return o1.getExtension().compareToIgnoreCase(o2.getExtension());
+            }
+        });
+        getMvpView().updateUI(fileList);
+        FLog.show("Sort list by File Type");
     }
 
     private void updateList(File directory) {
@@ -179,6 +227,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         } else {
             getMvpView().updateEmptyListUI();
         }
-        getMvpView().updateUI(fileList);
+        sortListByModifed();
     }
 }

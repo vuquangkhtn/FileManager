@@ -13,7 +13,7 @@ import java.util.List;
 public interface MainMvpView extends MvpView {
     void updateUI(List<CustomFile> fileList);
 
-    void openFile(CustomFile file);
+    boolean openFile(CustomFile file);
 
     void updateEmptyListUI();
 

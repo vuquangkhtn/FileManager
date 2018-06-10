@@ -36,6 +36,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     public static final int GRID_MODE = 1;
 
     String[] arrRadioBtnName = {"Name", "Created Time", "Last Modified", "Last Opened Time", "File Type"};
+    int[] arrRadioBtnId = {100, 101, 102, 103, 104};
 
     FileAdapter mAdapter;
     RecyclerView rvFileList;
@@ -305,35 +306,34 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         for(int i=0; i<5; i++){
             rb[i]  = new RadioButton(this);
             rb[i].setText(arrRadioBtnName[i]);
-            rb[i].setId(i + 100);
+            rb[i].setId(arrRadioBtnId[i]);
             rg.addView(rb[i]);
         }
-        rg.check(0);
+        rg.check(arrRadioBtnId[0]);
         builder.setView(rg);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int checked = rg.getCheckedRadioButtonId();
-
                 switch (checked) {
-                    case 0: {//Name
+                    case 100: {//Name
                         mPresenter.sortListByName();
                         break;
                     }
-                    case 1: {//Created
+                    case 101: {//Created
                         mPresenter.sortListByCreatedTime();
                         break;
                     }
-                    case 2: {//Modified
+                    case 102: {//Modified
                         mPresenter.sortListByModifed();
                         break;
                     }
-                    case 3: {//Opened Time
+                    case 103: {//Opened Time
                         mPresenter.sortListByOpenedTime();
                         break;
                     }
-                    case 4: {//File Type
+                    case 104: {//File Type
                         mPresenter.sortListByFileType();
                         break;
                     }
@@ -360,14 +360,17 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     @Override
-    public void openFile(CustomFile file) {
+    public boolean openFile(CustomFile file) {
+        boolean openedFile = false;
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(file.getFile()), file.getExtension());
             startActivity(intent);
+            openedFile = true;
         } catch (ActivityNotFoundException e) {
-            showMessage("This file is not supported");
+            openedFile = false;
         }
+        return openedFile;
     }
 
     @Override
