@@ -1,7 +1,10 @@
 package com.onlinetest.vuquang.filemanager.data.manager;
 
 import com.onlinetest.vuquang.filemanager.data.model.action.FileAction;
+import com.onlinetest.vuquang.filemanager.utils.FileHelper;
+import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
+import java.io.File;
 import java.util.Stack;
 
 /**
@@ -9,8 +12,20 @@ import java.util.Stack;
  */
 
 public class ActionManager {
-    private Stack<FileAction> actions = new Stack<>();
-    private Stack<FileAction> undoActions = new Stack<>();
+    private Stack<FileAction> actions;
+    private Stack<FileAction> undoActions;
+
+    public ActionManager() {
+        actions = new Stack<>();
+        undoActions = new Stack<>();
+        createRecycleBinDir();
+    }
+
+    private void createRecycleBinDir() {
+        if(!FileHelper.isExist(LocalPathUtils.RECYCLE_BIN_DIR)) {
+            FileHelper.createFileOrDirectory(LocalPathUtils.RECYCLE_BIN_DIR);
+        }
+    }
 
     public boolean addAction(FileAction action) {
         if(action.execute()) {
