@@ -67,8 +67,6 @@ public class CustomFile {
     }
 
     public String getInfo() {
-
-
         return MessageFormat.format("{0} ({1} items)",getLastModified(), getFileSize());
     }
 

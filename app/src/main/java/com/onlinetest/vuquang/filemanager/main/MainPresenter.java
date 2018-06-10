@@ -2,6 +2,8 @@ package com.onlinetest.vuquang.filemanager.main;
 
 import com.onlinetest.vuquang.filemanager.base.BasePresenter;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
+import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
+import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
@@ -33,6 +35,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     public void onUndoClicked() {
         if(!getDataManager().getActionManager().undo()) {
             getMvpView().onError("Can't undo");
+        } else {
+            getMvpView().showMessage("Undo successful");
+            //Todo: update list at current dir
         }
     }
 
@@ -40,6 +45,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     public void onRedoClicked() {
         if(!getDataManager().getActionManager().redo()) {
             getMvpView().onError("Can't redo");
+        }else {
+            getMvpView().showMessage("Redo successful");
+            //Todo: update list at current dir
         }
     }
 
@@ -66,12 +74,24 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void deleteFile(CustomFile file) {
-
+        if(!getDataManager().getActionManager().addAction(new DeleteAction(file.getPath()))) {
+            getMvpView().onError("Delete failed");
+        } else {
+            File parent = file.getFile().getParentFile();
+            updateList(parent);
+            getMvpView().showMessage("Delete successful");
+        }
     }
 
     @Override
     public void permanentlyDeleteFile(CustomFile file) {
-
+        if(!getDataManager().getActionManager().addAction(new PermanentlyDeleteAction(file.getPath()))) {
+            getMvpView().onError("Permanently Delete failed");
+        } else {
+            File parent = file.getFile().getParentFile();
+            updateList(parent);
+            getMvpView().showMessage("Permanently Delete successful");
+        }
     }
 
     @Override

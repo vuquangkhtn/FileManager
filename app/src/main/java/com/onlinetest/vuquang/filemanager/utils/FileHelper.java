@@ -23,17 +23,17 @@ public class FileHelper {
     }
 
     public static boolean createFileOrDirectory(String path) {
-        boolean createFile = false;
+        boolean createFile;
         File file = new File(path);
-        if (file.isDirectory()) {
-            createFile = file.mkdirs();
-        } else {
+        createFile = file.mkdirs();
+        if(!getExtension(getFileName(path)).isEmpty()) {
             try {
                 createFile = file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
         return createFile;
     }
 
@@ -171,4 +171,13 @@ public class FileHelper {
         return getFile(LocalPathUtils.RECYCLE_BIN_DIR);
     }
 
+    private static String getExtension(String name) {
+        String extension = "";
+
+        int i = name.lastIndexOf('.');
+        if (i > 0) {
+            extension = name.substring(i+1);
+        }
+        return extension;
+    }
 }

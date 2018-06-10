@@ -4,6 +4,7 @@ import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
 
+import java.io.File;
 import java.text.MessageFormat;
 
 /**
@@ -34,7 +35,7 @@ public class DeleteAction implements FileAction {
 
     @Override
     public boolean undo() {
-        return FileHelper.moveFile(LocalPathUtils.RECYCLE_BIN_DIR+FileHelper.getFileName(path)
+        return FileHelper.moveFile(LocalPathUtils.RECYCLE_BIN_DIR+ File.separator+FileHelper.getFileName(path)
                 ,FileHelper.getParentDir(path));
     }
 }
