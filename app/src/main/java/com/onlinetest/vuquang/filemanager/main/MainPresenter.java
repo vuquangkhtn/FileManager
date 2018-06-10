@@ -1,5 +1,6 @@
 package com.onlinetest.vuquang.filemanager.main;
 
+import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.base.BasePresenter;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
@@ -37,7 +38,8 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             getMvpView().onError("Can't undo");
         } else {
             getMvpView().showMessage("Undo successful");
-            //Todo: update list at current dir
+            //update list at current dir
+            updateList(new File(FileManagerApp.getApp().getCurPath()));
         }
     }
 
@@ -47,7 +49,8 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
             getMvpView().onError("Can't redo");
         }else {
             getMvpView().showMessage("Redo successful");
-            //Todo: update list at current dir
+            //update list at current dir
+            updateList(new File(FileManagerApp.getApp().getCurPath()));
         }
     }
 
@@ -99,10 +102,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     }
 
-    private void updateList(File file) {
+    private void updateList(File directory) {
         fileList.clear();
-        if(file.listFiles() != null && file.listFiles().length != 0) {
-            for (File childFile:file.listFiles()) {
+        FileManagerApp.getApp().setCurPath(directory.getPath());
+        if(directory.listFiles() != null && directory.listFiles().length != 0) {
+            for (File childFile:directory.listFiles()) {
                 CustomFile customFile = new CustomFile(childFile.getPath());
                 customFile.setLastOpenedTime(getDataManager().getCustomFileManager().getOpenTime(childFile.getPath()));
                 fileList.add(customFile);
