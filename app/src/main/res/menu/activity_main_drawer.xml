@@ -3,13 +3,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_storage"
-            android:icon="@drawable/ic_storage"
-            android:title="External Storage" />
-        <item
             android:id="@+id/nav_quick_access"
             android:icon="@drawable/ic_quickaccess"
             android:title="Quick Access" />
+        <item
+            android:id="@+id/nav_storage"
+            android:icon="@drawable/ic_storage"
+            android:title="External Storage" />
         <item
             android:id="@+id/nav_recycle_bin"
             android:icon="@drawable/ic_recycle_bin"

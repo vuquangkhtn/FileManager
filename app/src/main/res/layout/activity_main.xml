@@ -12,11 +12,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <include layout="@layout/layout_action_bar"/>
-        <FrameLayout
-            android:id="@+id/fragment_container"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_file_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </FrameLayout>
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
