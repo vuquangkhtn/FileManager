@@ -7,12 +7,12 @@ import android.util.Log;
  */
 
 public class FLog {
-    private static final String TAG = "CustomFileManager";
+    private static final String TAG = "FLog";
 
     public static final int LOG_CONSOLE = 0;
     public static final int LOG_FILE = 1;
 
-    private static int logType = 0;
+    private static int logType = LOG_CONSOLE;
 
     public static void show(String message) {
         switch (logType) {

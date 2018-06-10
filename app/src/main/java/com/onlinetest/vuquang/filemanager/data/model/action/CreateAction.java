@@ -27,7 +27,7 @@ public class CreateAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Create {1}", path));
+        FLog.show(MessageFormat.format("Create {0}", path));
     }
 
     @Override

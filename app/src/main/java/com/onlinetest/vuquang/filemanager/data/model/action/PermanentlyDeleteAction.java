@@ -27,7 +27,7 @@ public class PermanentlyDeleteAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Permanently Delete {1}", path));
+        FLog.show(MessageFormat.format("Permanently Delete {0}", path));
 
     }
 

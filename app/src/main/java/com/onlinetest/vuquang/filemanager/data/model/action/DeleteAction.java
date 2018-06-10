@@ -29,7 +29,7 @@ public class DeleteAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Delete {1}", path));
+        FLog.show(MessageFormat.format("Delete {0}", path));
 
     }
 
