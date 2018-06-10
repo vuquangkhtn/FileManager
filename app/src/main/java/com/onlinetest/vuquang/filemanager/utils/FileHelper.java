@@ -173,6 +173,10 @@ public class FileHelper {
         if(!file.exists() || file.isFile()) {
             return false;
         }
+        File desFile = new File(desDir + File.separator + FileHelper.getFileName(srcPath));
+        if(desFile.exists()) {
+            return false;
+        }
         copyFileOrDirectory(srcPath, desDir);
         return removeFile(srcPath);
     }

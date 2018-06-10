@@ -5,6 +5,10 @@
         android:icon="@drawable/ic_delete_permanent"
         android:title="Permanently Delete"/>
     <item
+        android:id="@+id/action_move_to"
+        android:icon="@drawable/ic_move"
+        android:title="Move To"/>
+    <item
         android:id="@+id/action_properties"
         android:icon="@drawable/ic_properties"
         android:title="Properties"/>

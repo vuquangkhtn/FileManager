@@ -36,9 +36,6 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements MainMvpView{
     private static final String TAG = "MainActivity";
 
-    private String[] arrRadioBtnName = {"Name", "Created Time", "Last Modified", "Last Opened Time", "File Type"};
-    private int[] arrRadioBtnId = {100, 101, 102, 103, 104};
-
     private FileAdapter mAdapter;
     private RecyclerView rvFileList;
     private DrawerLayout mDrawer;
@@ -336,42 +333,36 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Sort Type");
 
-        final RadioButton[] rb = new RadioButton[5];
-        final RadioGroup rg = new RadioGroup(this); //create the RadioGroup
-        rg.setOrientation(RadioGroup.VERTICAL);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_sort, null);
 
-        for(int i=0; i<5; i++){
-            rb[i]  = new RadioButton(this);
-            rb[i].setText(arrRadioBtnName[i]);
-            rb[i].setTextSize(22);
-            rb[i].setId(arrRadioBtnId[i]);
-            rg.addView(rb[i]);
-        }
-        rg.check(arrRadioBtnId[0]);
-        builder.setView(rg);
+        final RadioGroup radioGroup = dialogView.findViewById(R.id.rg_group);
 
+        radioGroup.check(R.id.rdb_name);
+
+        builder.setView(dialogView);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int checked = rg.getCheckedRadioButtonId();
+                int checked = radioGroup.getCheckedRadioButtonId();
                 switch (checked) {
-                    case 100: {//Name
+                    case R.id.rdb_name: {//Name
                         mPresenter.sortListByName();
                         break;
                     }
-                    case 101: {//Created
+                    case R.id.rdb_created: {//Created
                         mPresenter.sortListByCreatedTime();
                         break;
                     }
-                    case 102: {//Modified
+                    case R.id.rdb_modified: {//Modified
                         mPresenter.sortListByModifed();
                         break;
                     }
-                    case 103: {//Opened Time
+                    case R.id.rdb_opened: {//Opened Time
                         mPresenter.sortListByOpenedTime();
                         break;
                     }
-                    case 104: {//File Type
+                    case R.id.rdb_file_type: {//File Type
                         mPresenter.sortListByFileType();
                         break;
                     }

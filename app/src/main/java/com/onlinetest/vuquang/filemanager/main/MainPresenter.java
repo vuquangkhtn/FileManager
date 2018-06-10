@@ -143,7 +143,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new MoveAction(srcFile, desPath))) {
             getMvpView().onError("Move failed");
         } else {
-            openDirectory(new File(desPath));
+            openDirectory(new File(srcFile).getParentFile());
             if(!getDataManager().getOpenedFileManager().updateOpenedFile(srcFile,
                     desPath+File.separator+FileHelper.getFileName(srcFile))) {
                 getMvpView().showMessage("Can't update quick access");
