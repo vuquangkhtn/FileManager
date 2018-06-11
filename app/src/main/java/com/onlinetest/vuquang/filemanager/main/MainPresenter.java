@@ -130,6 +130,10 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void copyFile(String srcFile, String desPath) {
+        if(srcFile.equals(desPath)) {
+            getMvpView().showMessage("Move failed");
+            return;
+        }
         if(!getDataManager().getActionManager().addAction(new CopyAction(srcFile, desPath))) {
             getMvpView().onError("Copy failed");
         } else {
@@ -140,6 +144,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void moveFile(String srcFile, String desPath) {
+        if(srcFile.equals(desPath)) {
+            getMvpView().showMessage("Move failed");
+            return;
+        }
+
         if(!getDataManager().getActionManager().addAction(new MoveAction(srcFile, desPath))) {
             getMvpView().showMessage("Move failed");
         } else {

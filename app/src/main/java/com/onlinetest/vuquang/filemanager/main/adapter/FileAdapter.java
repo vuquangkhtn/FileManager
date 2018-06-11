@@ -83,11 +83,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!showCheckbox) {
-                    fileItemListener.onOpenClicked(file);
-                } else {
-                    file.isSelected = !file.isSelected;
-                    notifyItemChanged(position);
+                if(!FileManagerApp.getApp().getCurPath().equals(LocalPathUtils.RECYCLE_BIN_DIR)) {
+                    if(!showCheckbox) {
+                        fileItemListener.onOpenClicked(file);
+                    } else {
+                        file.isSelected = !file.isSelected;
+                        notifyItemChanged(position);
+                    }
                 }
             }
         });
