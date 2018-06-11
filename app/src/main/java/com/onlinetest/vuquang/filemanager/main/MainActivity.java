@@ -140,6 +140,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             @Override
             public void onMoveClicked(final CustomFile file) {
                 FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                folderPickerDialog.setSrcPath(file.getPath());
                 folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
                     @Override
                     public void onFolderChosen(String path) {
@@ -152,6 +153,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             @Override
             public void onCopyClicked(final CustomFile file) {
                 FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                folderPickerDialog.setSrcPath(file.getPath());
                 folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
                     @Override
                     public void onFolderChosen(String path) {

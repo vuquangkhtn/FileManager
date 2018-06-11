@@ -41,6 +41,7 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
 
     private View rootView;
 
+    private String srcPath;
     private String chosenPath;
     private ChooseFolderDialogListener chooseFolderDialogListener;
 
@@ -106,7 +107,7 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
         chosenPath = directory.getPath();
         if(directory.listFiles() != null && directory.listFiles().length != 0) {
             for (File childFile:directory.listFiles()) {
-                if(childFile.isFile() || childFile.getName().startsWith(".")) {
+                if(childFile.isFile() || childFile.getName().startsWith(".") || childFile.getPath().equals(srcPath)) {
                     continue;
                 }
 
@@ -156,6 +157,10 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
 
     public void setChooseFolderDialogListener(ChooseFolderDialogListener chooseFolderDialogListener) {
         this.chooseFolderDialogListener = chooseFolderDialogListener;
+    }
+
+    public void setSrcPath(String srcPath) {
+        this.srcPath = srcPath;
     }
 
     public interface ChooseFolderDialogListener {
