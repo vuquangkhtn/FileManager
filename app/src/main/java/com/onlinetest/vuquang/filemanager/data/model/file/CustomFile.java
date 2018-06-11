@@ -5,6 +5,9 @@ import android.webkit.MimeTypeMap;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -28,11 +31,6 @@ public class CustomFile {
 
     public CustomFile(String path) {
         this.file = FileHelper.getFile(path);
-        lastOpenedTime = 0;
-    }
-
-    public CustomFile(File file) {
-        this.file = file;
         lastOpenedTime = 0;
     }
 
@@ -64,12 +62,42 @@ public class CustomFile {
         this.lastOpenedTime = lastOpenedTime;
     }
 
-    public String getName() {
-        return file.getName();
+    public long getCreatedTime() {
+        long time = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            try {
+                BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                time = attr.creationTime().toMillis();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return time;
     }
 
-    public String getInfo() {
-        return MessageFormat.format("{0} ({1})",getLastModified(), getFileSize());
+    public String getStrCreatedTime() {
+        long time = getCreatedTime();
+        if(time == 0) {
+            return "None";
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(time);
+            SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy,HH:mm");
+            return format1.format(cal.getTime());
+        }
+    }
+
+    public String getStrLastOpenedTime() {
+        long time = getLastOpenedTime();
+        if(time == 0) {
+            return "None";
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(time);
+            SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy,HH:mm");
+            return format1.format(cal.getTime());
+        }
+
     }
 
     public String getLastModified() {
@@ -82,6 +110,14 @@ public class CustomFile {
             SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy,HH:mm");
             return format1.format(cal.getTime());
         }
+    }
+
+    public String getName() {
+        return file.getName();
+    }
+
+    public String getInfo() {
+        return MessageFormat.format("{0} ({1})",getLastModified(), getFileSize());
     }
 
     public String getFileSize() {
@@ -118,22 +154,5 @@ public class CustomFile {
             countMeasure++;
         }
         return String.format("%.2f %s",size, measure[countMeasure]);
-    }
-
-    public String getCreatedDate() {
-        return "null";
-    }
-
-    public String getStrLastOpenedTime() {
-        long time = getLastOpenedTime();
-        if(time == 0) {
-            return "None";
-        } else {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(time);
-            SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy,HH:mm");
-            return format1.format(cal.getTime());
-        }
-
     }
 }

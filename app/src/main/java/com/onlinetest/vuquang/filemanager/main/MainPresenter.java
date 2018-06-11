@@ -190,16 +190,15 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByCreatedTime() {
-//        Collections.sort(fileList, new Comparator<CustomFile>() {
-//            @Override
-//            public int compare(CustomFile o1, CustomFile o2) {
-//                Long time1 = o1.getFile().lastModified();
-//                Long time2 = o2.getFile().lastModified();
-//                return time1.compareTo(time2);
-//            }
-//        });
-//        openDirectory(new File(FileManagerApp.getApp().getCurPath()));
-        getMvpView().showMessage("This function is not ready");
+        Collections.sort(fileList, new Comparator<CustomFile>() {
+            @Override
+            public int compare(CustomFile o1, CustomFile o2) {
+                Long time1 = o1.getCreatedTime();
+                Long time2 = o2.getCreatedTime();
+                return time2.compareTo(time1);
+            }
+        });
+        getMvpView().updateUI(fileList);
         FLog.show("Sort list by Created Name");
     }
 
@@ -219,7 +218,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByOpenedTime() {
-        openDirectory(new File(FileManagerApp.getApp().getCurPath()));
         Collections.sort(fileList, new Comparator<CustomFile>() {
             @Override
             public int compare(CustomFile o1, CustomFile o2) {

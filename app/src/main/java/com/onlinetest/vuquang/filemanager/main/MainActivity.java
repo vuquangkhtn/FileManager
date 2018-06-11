@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -316,7 +315,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         }
         tvFileSize.setText(file.getFileSize());
         tvModified.setText(file.getLastModified());
-        tvCreated.setText(file.getCreatedDate());
+        tvCreated.setText(file.getStrCreatedTime());
         tvOpenedDate.setText(file.getStrLastOpenedTime());
 
         dialogBuilder.setView(dialogView);
