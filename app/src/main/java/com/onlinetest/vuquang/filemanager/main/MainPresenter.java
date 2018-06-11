@@ -108,7 +108,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new DeleteAction(file.getPath()))) {
             getMvpView().onError("Delete failed");
         } else {
-            getMvpView().deleteFile(file);
+            getMvpView().notifyDelete(file);
             if(!getDataManager().getOpenedFileManager().updateOpenedFile(file.getPath(),
                     LocalPathUtils.RECYCLE_BIN_DIR+File.separator+FileHelper.getFileName(file.getPath()))) {
                 getMvpView().showMessage("Can't update quick access");
@@ -122,7 +122,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         if(!getDataManager().getActionManager().addAction(new PermanentlyDeleteAction(file.getPath()))) {
             getMvpView().onError("Permanently Delete failed");
         } else {
-            getMvpView().deleteFile(file);
+            getMvpView().notifyDelete(file);
             getDataManager().getOpenedFileManager().removeIfContain(file.getPath());
             getMvpView().showMessage("Permanently Delete successful");
         }
@@ -141,7 +141,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void moveFile(String srcFile, String desPath) {
         if(!getDataManager().getActionManager().addAction(new MoveAction(srcFile, desPath))) {
-            getMvpView().onError("Move failed");
+            getMvpView().showMessage("Move failed");
         } else {
             openDirectory(new File(srcFile).getParentFile());
             if(!getDataManager().getOpenedFileManager().updateOpenedFile(srcFile,
@@ -149,6 +149,27 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                 getMvpView().showMessage("Can't update quick access");
             }
             getMvpView().showMessage("Move successful");
+        }
+    }
+
+    @Override
+    public void copyMultiFiles(List<CustomFile> selectedList, String path) {
+        for (CustomFile file:selectedList) {
+            copyFile(file.getPath(),path);
+        }
+    }
+
+    @Override
+    public void moveMultiFiles(List<CustomFile> selectedList, String path) {
+        for (CustomFile file:selectedList) {
+            moveFile(file.getPath(),path);
+        }
+    }
+
+    @Override
+    public void deleteMultiFiles(List<CustomFile> selectedList) {
+        for (CustomFile file:selectedList) {
+            deleteFile(file);
         }
     }
 

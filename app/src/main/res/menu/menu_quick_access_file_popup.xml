@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_open"
-        android:icon="@drawable/ic_unknow_file"
+        android:icon="@drawable/ic_unknown_file"
         android:title="Open"/>
     <item
         android:id="@+id/action_delete"

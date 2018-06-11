@@ -9,6 +9,11 @@
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:layout_height="@dimen/d70">
+    <CheckBox
+        android:id="@+id/item_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
     <ImageView
         android:id="@+id/imv_file_icon"
         android:layout_alignParentTop="true"

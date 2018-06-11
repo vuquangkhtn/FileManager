@@ -10,7 +10,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     private TextView txtTitle,txtPath;
     private View layoutPath;
     private PopupMenu pm;
+    private ActionMode mActionMode;
 
     private MainMvpPresenter<MainMvpView> mPresenter;
 
@@ -215,6 +218,11 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.action_select: {
+                        mAdapter.setSelect(true);
+                        mActionMode = MainActivity.this.startActionMode(new ActionBarCallBack());
+                        return true;
+                    }
                     case R.id.action_sort_by: {
                         showSortOptionDialog();
                         return true;
@@ -390,7 +398,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
     @Override
     public boolean openFile(CustomFile file) {
-        boolean openedFile = false;
+        boolean openedFile;
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(file.getFile()), file.getMimeType());
@@ -411,7 +419,64 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     @Override
-    public void deleteFile(CustomFile file) {
-        mAdapter.removeFile(file);
+    public void notifyDelete(CustomFile file) {
+        mAdapter.notifyRemove(file);
+    }
+
+    private class ActionBarCallBack implements ActionMode.Callback {
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // TODO Auto-generated method stub
+            switch (item.getItemId()) {
+                case R.id.action_delete: {
+                    mPresenter.deleteMultiFiles(mAdapter.getSelectedList());
+                    mode.finish();
+                    return true;
+                }
+                case R.id.action_copy_to: {
+                    FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                    folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
+                        @Override
+                        public void onFolderChosen(String path) {
+                            mPresenter.copyMultiFiles(mAdapter.getSelectedList(), path);
+                        }
+                    });
+                    folderPickerDialog.show(getSupportFragmentManager(),TAG);
+                    mode.finish();
+                    return true;
+                }
+                case R.id.action_move_to: {
+                    FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                    folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
+                        @Override
+                        public void onFolderChosen(String path) {
+                            mPresenter.moveMultiFiles(mAdapter.getSelectedList(), path);
+                        }
+                    });
+                    folderPickerDialog.show(getSupportFragmentManager(),TAG);
+                    mode.finish();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_contextual, menu);
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mAdapter.setSelect(false);
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
     }
 }

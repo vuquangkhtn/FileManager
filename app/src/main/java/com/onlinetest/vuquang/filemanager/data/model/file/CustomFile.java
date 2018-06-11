@@ -22,6 +22,7 @@ public class CustomFile {
     private int id;
     private File file;
     private long lastOpenedTime;
+    public boolean isSelected = false;
 
     public CustomFile() {
         id = -1;

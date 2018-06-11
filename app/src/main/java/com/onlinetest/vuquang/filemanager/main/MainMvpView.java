@@ -15,7 +15,7 @@ public interface MainMvpView extends MvpView {
 
     boolean openFile(CustomFile file);
 
-    public void setEmptyMode(boolean isEnable);
+    void setEmptyMode(boolean isEnable);
 
-    void deleteFile(CustomFile file);
+    void notifyDelete(CustomFile file);
 }
