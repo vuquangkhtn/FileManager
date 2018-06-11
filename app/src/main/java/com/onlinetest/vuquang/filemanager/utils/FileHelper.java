@@ -131,7 +131,8 @@ public class FileHelper {
     static boolean appendStrToFile(String path, String message) {
         if(!isExist(path))
         {
-            if(!createDirectory(path)) {
+            createDirectory(getParentDir(path));
+            if(!createFile(path)) {
                 return false;
             }
         }
