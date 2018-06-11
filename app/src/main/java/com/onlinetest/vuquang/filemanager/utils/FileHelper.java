@@ -1,6 +1,9 @@
 package com.onlinetest.vuquang.filemanager.utils;
 
 import android.util.Log;
+import android.webkit.MimeTypeMap;
+
+import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 
 /**
  * Created by VuQuang on 6/9/2018.
@@ -25,19 +27,14 @@ public class FileHelper {
     }
 
     public static boolean createDirectory(String path) {
-        boolean createFile = false;
-        if(getExtension(getFileName(path)).isEmpty()) {
-            File file = new File(path);
-            createFile = file.mkdirs();
-        }
-
-        return createFile;
+        File file = new File(path);
+        return file.mkdirs();
     }
 
     public static boolean createFile(String path) {
         boolean createFile = false;
         File file;
-        if(getExtension(path).isEmpty()) {
+        if(MimeTypeMap.getFileExtensionFromUrl(path).isEmpty()) {
             file = new File(path+".txt");
         } else {
             file = new File(path);
@@ -195,19 +192,5 @@ public class FileHelper {
     public static File getFile(String path) {
         File file = new File(path);
         return file;
-    }
-
-    public static File getRecycleBin() {
-        return getFile(LocalPathUtils.RECYCLE_BIN_DIR);
-    }
-
-    private static String getExtension(String name) {
-        String extension = "";
-
-        int i = name.lastIndexOf('.');
-        if (i > 0) {
-            extension = name.substring(i+1);
-        }
-        return extension;
     }
 }

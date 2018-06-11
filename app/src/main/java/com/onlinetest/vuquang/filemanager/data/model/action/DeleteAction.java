@@ -2,7 +2,7 @@ package com.onlinetest.vuquang.filemanager.data.model.action;
 
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
-import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
+import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
 import java.io.File;
 import java.text.MessageFormat;

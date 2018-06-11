@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 import com.onlinetest.vuquang.filemanager.R;
 import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
-import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
+import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

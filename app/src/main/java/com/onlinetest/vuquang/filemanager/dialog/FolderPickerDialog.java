@@ -11,12 +11,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.onlinetest.vuquang.filemanager.R;
-import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.base.BaseDialog;
 import com.onlinetest.vuquang.filemanager.base.DialogMvpView;
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 import com.onlinetest.vuquang.filemanager.dialog.adapter.FolderAdapter;
-import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
+import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
 import java.io.File;
 import java.util.ArrayList;

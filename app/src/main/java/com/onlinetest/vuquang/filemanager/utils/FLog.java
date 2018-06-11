@@ -2,6 +2,8 @@ package com.onlinetest.vuquang.filemanager.utils;
 
 import android.util.Log;
 
+import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
+
 /**
  * Created by VuQuang on 6/9/2018.
  */

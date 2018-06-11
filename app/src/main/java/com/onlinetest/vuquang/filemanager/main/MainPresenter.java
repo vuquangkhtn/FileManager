@@ -12,7 +12,7 @@ import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAct
 import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
-import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
+import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void loadRecycleBin() {
-        File file = FileHelper.getRecycleBin();
+        File file = FileHelper.getFile(LocalPathUtils.RECYCLE_BIN_DIR);
         openDirectory(file);
     }
 

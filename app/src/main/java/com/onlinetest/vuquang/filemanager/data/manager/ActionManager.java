@@ -2,7 +2,7 @@ package com.onlinetest.vuquang.filemanager.data.manager;
 
 import com.onlinetest.vuquang.filemanager.data.model.action.FileAction;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
-import com.onlinetest.vuquang.filemanager.utils.LocalPathUtils;
+import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
 import java.util.Stack;
 
