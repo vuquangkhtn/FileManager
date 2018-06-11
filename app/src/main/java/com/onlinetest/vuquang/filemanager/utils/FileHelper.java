@@ -167,6 +167,9 @@ public class FileHelper {
     }
 
     public static boolean moveFile(String srcPath, String desDir) {
+        if(FileHelper.getParentDir(srcPath).equals(desDir)) {
+            return false;
+        }
         File file = new File(desDir);
         if(!file.exists() || file.isFile()) {
             return false;

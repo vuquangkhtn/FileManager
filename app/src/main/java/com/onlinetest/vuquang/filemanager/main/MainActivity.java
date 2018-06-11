@@ -32,6 +32,7 @@ import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements MainMvpView{
@@ -140,7 +141,9 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             @Override
             public void onMoveClicked(final CustomFile file) {
                 FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
-                folderPickerDialog.setSrcPath(file.getPath());
+                List<String> listPath = new ArrayList<>();
+                listPath.add(file.getPath());
+                folderPickerDialog.setChosenPathList(listPath);
                 folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
                     @Override
                     public void onFolderChosen(String path) {
@@ -153,7 +156,9 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             @Override
             public void onCopyClicked(final CustomFile file) {
                 FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
-                folderPickerDialog.setSrcPath(file.getPath());
+                List<String> listPath = new ArrayList<>();
+                listPath.add(file.getPath());
+                folderPickerDialog.setChosenPathList(listPath);
                 folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
                     @Override
                     public void onFolderChosen(String path) {
@@ -438,6 +443,11 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 }
                 case R.id.action_copy_to: {
                     FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                    List<String> listPath = new ArrayList<>();
+                    for (CustomFile file: mAdapter.getSelectedList()) {
+                        listPath.add(file.getPath());
+                    }
+                    folderPickerDialog.setChosenPathList(listPath);
                     folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
                         @Override
                         public void onFolderChosen(String path) {
@@ -450,6 +460,11 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 }
                 case R.id.action_move_to: {
                     FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
+                    List<String> listPath = new ArrayList<>();
+                    for (CustomFile file: mAdapter.getSelectedList()) {
+                        listPath.add(file.getPath());
+                    }
+                    folderPickerDialog.setChosenPathList(listPath);
                     folderPickerDialog.setChooseFolderDialogListener(new FolderPickerDialog.ChooseFolderDialogListener() {
                         @Override
                         public void onFolderChosen(String path) {

@@ -30,7 +30,7 @@ import java.util.List;
 public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
     public static final String TAG = "FolderPickerDialog";
 
-    private List<CustomFile> fileList;
+    private List<CustomFile> folderList;
     private FolderAdapter mAdapter;
     private RecyclerView rvFolderList;
 
@@ -41,7 +41,7 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
 
     private View rootView;
 
-    private String srcPath;
+    private List<String> chosenPathList = new ArrayList<>();
     private String chosenPath;
     private ChooseFolderDialogListener chooseFolderDialogListener;
 
@@ -50,7 +50,7 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
                              Bundle savedInstanceState) {
         View view = View.inflate(getActivity(), R.layout.dialog_choose_folder, null);
         rootView = view;
-        fileList = new ArrayList<>();
+        folderList = new ArrayList<>();
         chosenPath = LocalPathUtils.EXTERNAL_STORAGE;
 
         imbBack = view.findViewById(R.id.imb_navi_back);
@@ -103,28 +103,37 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
     }
 
     private void openDirectory(File directory) {
-        fileList.clear();
+        folderList.clear();
         chosenPath = directory.getPath();
         if(directory.listFiles() != null && directory.listFiles().length != 0) {
             for (File childFile:directory.listFiles()) {
-                if(childFile.isFile() || childFile.getName().startsWith(".") || childFile.getPath().equals(srcPath)) {
+                if(childFile.isFile() || childFile.getName().startsWith(".") || contain(childFile.getPath())) {
                     continue;
                 }
 
                 CustomFile customFile = new CustomFile(childFile.getPath());
-                fileList.add(customFile);
+                folderList.add(customFile);
             }
-            if(fileList.size() == 0) {
+            if(folderList.size() == 0) {
                 setEmptyMode(true);
             } else {
                 setEmptyMode(false);
-                sortListByFileType(fileList);
-                mAdapter.setData(fileList);
+                sortListByFileType(folderList);
+                mAdapter.setData(folderList);
             }
         } else {
             setEmptyMode(true);
         }
         tvPath.setText(chosenPath);
+    }
+
+    private boolean contain(String path) {
+        for (String str: chosenPathList) {
+            if(str.equals(path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void sortListByFileType(List<CustomFile> fileList) {
@@ -148,6 +157,10 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
 
     }
 
+    public void setChosenPathList(List<String> chosenPathList) {
+        this.chosenPathList = new ArrayList<>(chosenPathList);
+    }
+
     public void setEmptyMode(boolean isEnable) {
         ViewGroup dataView = rootView.findViewById(R.id.layout_empty);
         if (dataView != null) {
@@ -157,10 +170,6 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
 
     public void setChooseFolderDialogListener(ChooseFolderDialogListener chooseFolderDialogListener) {
         this.chooseFolderDialogListener = chooseFolderDialogListener;
-    }
-
-    public void setSrcPath(String srcPath) {
-        this.srcPath = srcPath;
     }
 
     public interface ChooseFolderDialogListener {
