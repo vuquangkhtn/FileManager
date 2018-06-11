@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:orientation="horizontal"
-    android:background="@android:color/white">
+    android:background="@color/backgroud_gray">
 
     <ImageButton
         android:id="@+id/imb_navi_back"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@android:color/white"
+        android:background="@color/backgroud_gray"
         android:src="@drawable/ic_back" />
 
     <TextView
@@ -19,7 +19,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textAlignment="center"
+        android:gravity="start"
         android:textColor="@color/hint_text"
         android:scrollHorizontally="true"
         android:singleLine="true"

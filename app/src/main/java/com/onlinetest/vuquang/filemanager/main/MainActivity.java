@@ -168,6 +168,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
     private void setQuickAccessUI() {
         layoutPath.setVisibility(View.GONE);
+        imbMore.setVisibility(View.GONE);
         recreatePopupLayout(null);
 
         txtTitle.setText("Quick Access");
