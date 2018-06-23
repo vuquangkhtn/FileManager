@@ -91,9 +91,6 @@ public abstract class AbstractFile extends File{
         }
     }
 
-    public String getDetail() {
-        return MessageFormat.format("{0} ({1})",getStrLastModified(), getSizeInfo());
-    }
 
     public static AbstractFile castType(String path) {
         File file = new File(path);
@@ -105,7 +102,20 @@ public abstract class AbstractFile extends File{
     }
 
 
-    public abstract long getSize();
-    public abstract String getSizeInfo();
+
+    public String getSizeInfo() {
+        String[] measure = {"B", "KB", "MB", "GB"};
+        int countMeasure = 0;
+        double size = getSize();
+        while(size > 1024 && countMeasure < 4) {
+            size = size / 1024;
+            countMeasure++;
+        }
+        return String.format("%.2f %s",size, measure[countMeasure]);
+    }
+
+
+    abstract long getSize();
     public abstract String getExtension();
+    public abstract String getDetail();
 }

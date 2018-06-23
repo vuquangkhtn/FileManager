@@ -24,20 +24,13 @@ public class CustomFile extends AbstractFile {
         super(pathname);
     }
 
-    public String getExtension() {
-        return MimeTypeMap.getFileExtensionFromUrl(getPath());
+    @Override
+    public String getDetail() {
+        return MessageFormat.format("{0} ({1})",getStrLastModified(), getSizeInfo());
     }
 
-    @Override
-    public String getSizeInfo() {
-        String[] measure = {"B", "KB", "MB", "GB"};
-        int countMeasure = 0;
-        double size = getSize();
-        while(size > 1024 && countMeasure < 4) {
-            size = size / 1024;
-            countMeasure++;
-        }
-        return String.format("%.2f %s",size, measure[countMeasure]);
+    public String getExtension() {
+        return MimeTypeMap.getFileExtensionFromUrl(getPath());
     }
 
     @Override

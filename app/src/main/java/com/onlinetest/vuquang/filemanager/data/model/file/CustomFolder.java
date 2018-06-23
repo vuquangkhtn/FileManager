@@ -3,6 +3,7 @@ package com.onlinetest.vuquang.filemanager.data.model.file;
 import android.support.annotation.NonNull;
 
 import java.io.File;
+import java.text.MessageFormat;
 
 /**
  * Created by VuQuang on 6/23/2018.
@@ -35,7 +36,13 @@ public class CustomFolder extends AbstractFile {
         return "Folder";
     }
 
-    public int countFolderItemsCount() {
+    private int countFolderItemsCount() {
         return this.list().length;
+    }
+
+
+    @Override
+    public String getDetail() {
+        return MessageFormat.format("{0} ({1})",getStrLastModified(), countFolderItemsCount());
     }
 }
