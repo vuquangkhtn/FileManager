@@ -1,5 +1,9 @@
 package com.onlinetest.vuquang.filemanager.main;
 
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
 import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.base.BasePresenter;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
@@ -25,33 +29,323 @@ import java.util.List;
  */
 
 public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> implements MainMvpPresenter<V> {
+    private static final int ERROR_UNDO_ACTION = 10;
+    private static final int ERROR_REDO_ACTION = 11;
+    private static final int ERROR_COPY_ACTION = 12;
+    private static final int ERROR_MOVE_ACTION = 13;
+    private static final int ERROR_DELETE_ACTION = 14;
+    private static final int ERROR_PERMANENTLY_DELETE_ACTION = 16;
+    private static final int SUCCESS_UNDO_ACTION = 20;
+    private static final int SUCCESS_REDO_ACTION = 21;
+    private static final int SUCCESS_COPY_ACTION = 22;
+    private static final int SUCCESS_MOVE_ACTION = 23;
+    private static final int SUCCESS_DELETE_ACTION = 24;
+    private static final int SUCCESS_PERMANENTLY_DELETE_ACTION = 26;
+    private static final int MULTI_DELETE_ACTION = 30;
+    private static final int MULTI_COPY_ACTION = 31;
+    private static final int MULTI_MOVE_ACTION = 32;
+
 
     private List<CustomFile> fileList;
+    private Handler mainHandler;
 
     public MainPresenter(AppDataManager dataManager) {
         super(dataManager);
         fileList = new ArrayList<>();
+        mainHandler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                getMvpView().hideLoading();
+                switch (msg.what) {
+                    case ERROR_UNDO_ACTION: {
+                        getMvpView().onError("Can't undo");
+                        return true;
+                    }
+                    case ERROR_REDO_ACTION: {
+                        getMvpView().onError("Can't redo");
+                        break;
+                    }
+                    case ERROR_COPY_ACTION: {
+                        getMvpView().showMessage("Copy failed");
+                        break;
+                    }
+                    case ERROR_MOVE_ACTION: {
+                        getMvpView().showMessage("Move failed");
+                        break;
+                    }
+                    case ERROR_DELETE_ACTION: {
+                        getMvpView().onError("Delete failed");
+                        break;
+                    }
+                    case ERROR_PERMANENTLY_DELETE_ACTION: {
+                        break;
+                    }
+                    case SUCCESS_UNDO_ACTION: {
+                        openDirectory(new File(FileManagerApp.getApp().getCurPath()));
+                        getMvpView().showMessage("Undo successful");
+                        return true;
+                    }
+                    case SUCCESS_REDO_ACTION: {
+                        openDirectory(new File(FileManagerApp.getApp().getCurPath()));
+                        getMvpView().showMessage("Redo successful");
+                        break;
+                    }
+                    case SUCCESS_COPY_ACTION: {
+                        String desPath;
+                        if(msg.obj != null) {
+                            desPath = (String) msg.obj;
+                        } else {
+                            return false;
+                        }
+                        openDirectory(new File(desPath));
+                        getMvpView().showMessage("Copy successful");
+                        break;
+                    }
+                    case SUCCESS_MOVE_ACTION: {
+                        String srcFile;
+                        if(msg.obj != null) {
+                            srcFile = (String) msg.obj;
+                        } else {
+                            return false;
+                        }
+                        openDirectory(new File(srcFile).getParentFile());
+                        getMvpView().showMessage("Move successful");
+                        break;
+                    }
+                    case SUCCESS_DELETE_ACTION: {
+                        CustomFile file;
+                        if(msg.obj != null) {
+                            file = (CustomFile) msg.obj;
+                        } else {
+                            Log.d("ERROR","not input obj file for delete action");
+                            return false;
+                        }
+                        getMvpView().notifyDelete(file);
+
+                        getMvpView().showMessage("Delete successful");
+                        break;
+                    }
+                    case SUCCESS_PERMANENTLY_DELETE_ACTION: {
+                        CustomFile file;
+                        if(msg.obj != null) {
+                            file = (CustomFile) msg.obj;
+                        } else {
+                            Log.d("ERROR","not input obj file for permanently delete action");
+                            return false;
+                        }
+                        getMvpView().notifyDelete(file);
+                        getDataManager().getOpenedFileManager().removeIfContain(file.getPath());
+                        getMvpView().showMessage("Permanently Delete successful");
+                        break;
+                    }
+                    case MULTI_COPY_ACTION: {
+                        getMvpView().showMessage("Multi Copy completed");
+                        break;
+                    }
+                    case MULTI_DELETE_ACTION: {
+                        String srcFile;
+                        if(msg.obj != null) {
+                            srcFile = (String) msg.obj;
+                        } else {
+                            return false;
+                        }
+                        openDirectory(new File(srcFile).getParentFile());
+                        getMvpView().showMessage("Multi Delete completed");
+                        break;
+                    }
+                    case MULTI_MOVE_ACTION: {
+                        String srcFile;
+                        if(msg.obj != null) {
+                            srcFile = (String) msg.obj;
+                        } else {
+                            return false;
+                        }
+                        openDirectory(new File(srcFile).getParentFile());
+                        getMvpView().showMessage("Multi Move completed");
+                        break;
+                    }
+                }
+
+                return false;
+            }
+
+        });
     }
 
     @Override
     public void onUndoClicked() {
-        if(!getDataManager().getActionManager().undo()) {
-            getMvpView().onError("Can't undo");
-        } else {
-            getMvpView().showMessage("Undo successful");
-            //update list at current dir
-            openDirectory(new File(FileManagerApp.getApp().getCurPath()));
-        }
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!getDataManager().getActionManager().undo()) {
+                    mainHandler.obtainMessage(ERROR_UNDO_ACTION, null).sendToTarget();
+                } else {
+                    mainHandler.obtainMessage(SUCCESS_UNDO_ACTION, null).sendToTarget();
+                }
+            }
+        }).start();
     }
 
     @Override
     public void onRedoClicked() {
-        if(!getDataManager().getActionManager().redo()) {
-            getMvpView().onError("Can't redo");
-        }else {
-            getMvpView().showMessage("Redo successful");
-            //update list at current dir
-            openDirectory(new File(FileManagerApp.getApp().getCurPath()));
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!getDataManager().getActionManager().redo()) {
+                    mainHandler.obtainMessage(ERROR_REDO_ACTION, null).sendToTarget();
+                }else {
+                    mainHandler.obtainMessage(SUCCESS_REDO_ACTION, null).sendToTarget();
+                }
+            }
+        }).start();
+    }
+
+
+    @Override
+    public void deleteFile(final CustomFile file) {
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!getDataManager().getActionManager().addAction(new DeleteAction(file.getPath()))) {
+                    mainHandler.obtainMessage(ERROR_DELETE_ACTION, file).sendToTarget();
+                } else {
+                    mainHandler.obtainMessage(SUCCESS_DELETE_ACTION, file).sendToTarget();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void permanentlyDeleteFile(final CustomFile file) {
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!getDataManager().getActionManager().addAction(new PermanentlyDeleteAction(file.getPath()))) {
+                    mainHandler.obtainMessage(SUCCESS_PERMANENTLY_DELETE_ACTION, file).sendToTarget();
+                } else {
+                    mainHandler.obtainMessage(SUCCESS_PERMANENTLY_DELETE_ACTION, file).sendToTarget();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void copyFile(final String srcFile, final String desPath) {
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(srcFile.equals(desPath)) {
+                    mainHandler.obtainMessage(ERROR_COPY_ACTION, null).sendToTarget();
+                    return;
+                }
+                if(!getDataManager().getActionManager().addAction(new CopyAction(srcFile, desPath))) {
+                    mainHandler.obtainMessage(ERROR_COPY_ACTION, null).sendToTarget();
+                } else {
+                    mainHandler.obtainMessage(SUCCESS_COPY_ACTION, desPath).sendToTarget();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void moveFile(final String srcFile, final String desPath) {
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(srcFile.equals(desPath)) {
+                    mainHandler.obtainMessage(ERROR_MOVE_ACTION, null).sendToTarget();
+                    return;
+                }
+
+                if(!getDataManager().getActionManager().addAction(new MoveAction(srcFile, desPath))) {
+                    mainHandler.obtainMessage(ERROR_MOVE_ACTION, null).sendToTarget();
+                } else {
+            getDataManager().getOpenedFileManager().updateOpenedFile(srcFile,
+                    desPath+File.separator+FileHelper.getFileName(srcFile));
+                    mainHandler.obtainMessage(SUCCESS_MOVE_ACTION, srcFile).sendToTarget();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void copyMultiFiles(final List<CustomFile> selectedList, final String path) {
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (CustomFile file:selectedList) {
+                    if(file.getPath().equals(path)) {
+                        continue;
+                    }
+                    getDataManager().getActionManager().addAction(new CopyAction(file.getPath(),path));
+                }
+                mainHandler.obtainMessage(MULTI_COPY_ACTION).sendToTarget();
+            }
+        }).start();
+
+    }
+
+    @Override
+    public void moveMultiFiles(final List<CustomFile> selectedList, final String path) {
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (CustomFile file:selectedList) {
+                    if(file.getPath().equals(path)) {
+                        continue;
+                    }
+                    getDataManager().getActionManager().addAction(new MoveAction(file.getPath(), path));
+                }
+                mainHandler.obtainMessage(MULTI_MOVE_ACTION,selectedList.get(0).getPath()).sendToTarget();
+            }
+        }).start();
+
+    }
+
+    @Override
+    public void deleteMultiFiles(final List<CustomFile> selectedList) {
+        getMvpView().showLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (CustomFile file:selectedList) {
+                    getDataManager().getActionManager().addAction(new DeleteAction(file.getPath()));
+                }
+                mainHandler.obtainMessage(MULTI_DELETE_ACTION,selectedList.get(0).getPath()).sendToTarget();
+            }
+        }).start();
+
+    }
+
+    @Override
+    public void createFile(String s) {
+        String curPath = FileManagerApp.getApp().getCurPath();
+        String filePath = curPath + File.separator + s;
+        if(!getDataManager().getActionManager().addAction(new CreateFileAction(filePath))) {
+            getMvpView().onError("Create failed");
+        } else {
+            openDirectory(new File(curPath));
+            getMvpView().showMessage("Create successful");
+        }
+    }
+
+    @Override
+    public void createFolder(String s) {
+        String curPath = FileManagerApp.getApp().getCurPath();
+        String filePath = curPath + File.separator + s;
+        if(!getDataManager().getActionManager().addAction(new CreateFolderAction(filePath))) {
+            getMvpView().onError("Create failed");
+        } else {
+            openDirectory(new File(curPath));
+            getMvpView().showMessage("Create successful");
         }
     }
 
@@ -103,108 +397,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         }
     }
 
-    @Override
-    public void deleteFile(CustomFile file) {
-        if(!getDataManager().getActionManager().addAction(new DeleteAction(file.getPath()))) {
-            getMvpView().onError("Delete failed");
-        } else {
-            getMvpView().notifyDelete(file);
-            if(!getDataManager().getOpenedFileManager().updateOpenedFile(file.getPath(),
-                    LocalPathUtils.RECYCLE_BIN_DIR+File.separator+FileHelper.getFileName(file.getPath()))) {
-                getMvpView().showMessage("Can't update quick access");
-            }
-            getMvpView().showMessage("Delete successful");
-        }
-    }
-
-    @Override
-    public void permanentlyDeleteFile(CustomFile file) {
-        if(!getDataManager().getActionManager().addAction(new PermanentlyDeleteAction(file.getPath()))) {
-            getMvpView().onError("Permanently Delete failed");
-        } else {
-            getMvpView().notifyDelete(file);
-            getDataManager().getOpenedFileManager().removeIfContain(file.getPath());
-            getMvpView().showMessage("Permanently Delete successful");
-        }
-    }
-
-    @Override
-    public void copyFile(String srcFile, String desPath) {
-        if(srcFile.equals(desPath)) {
-            getMvpView().showMessage("Move failed");
-            return;
-        }
-        if(!getDataManager().getActionManager().addAction(new CopyAction(srcFile, desPath))) {
-            getMvpView().onError("Copy failed");
-        } else {
-            openDirectory(new File(desPath));
-            getMvpView().showMessage("Copy successful");
-        }
-    }
-
-    @Override
-    public void moveFile(String srcFile, String desPath) {
-        if(srcFile.equals(desPath)) {
-            getMvpView().showMessage("Move failed");
-            return;
-        }
-
-        if(!getDataManager().getActionManager().addAction(new MoveAction(srcFile, desPath))) {
-            getMvpView().showMessage("Move failed");
-        } else {
-            openDirectory(new File(srcFile).getParentFile());
-            if(!getDataManager().getOpenedFileManager().updateOpenedFile(srcFile,
-                    desPath+File.separator+FileHelper.getFileName(srcFile))) {
-                getMvpView().showMessage("Can't update quick access");
-            }
-            getMvpView().showMessage("Move successful");
-        }
-    }
-
-    @Override
-    public void copyMultiFiles(List<CustomFile> selectedList, String path) {
-        for (CustomFile file:selectedList) {
-            copyFile(file.getPath(),path);
-        }
-    }
-
-    @Override
-    public void moveMultiFiles(List<CustomFile> selectedList, String path) {
-        for (CustomFile file:selectedList) {
-            moveFile(file.getPath(),path);
-        }
-    }
-
-    @Override
-    public void deleteMultiFiles(List<CustomFile> selectedList) {
-        for (CustomFile file:selectedList) {
-            deleteFile(file);
-        }
-    }
-
-    @Override
-    public void createFile(String s) {
-        String curPath = FileManagerApp.getApp().getCurPath();
-        String filePath = curPath + File.separator + s;
-        if(!getDataManager().getActionManager().addAction(new CreateFileAction(filePath))) {
-            getMvpView().onError("Create failed");
-        } else {
-            openDirectory(new File(curPath));
-            getMvpView().showMessage("Create successful");
-        }
-    }
-
-    @Override
-    public void createFolder(String s) {
-        String curPath = FileManagerApp.getApp().getCurPath();
-        String filePath = curPath + File.separator + s;
-        if(!getDataManager().getActionManager().addAction(new CreateFolderAction(filePath))) {
-            getMvpView().onError("Create failed");
-        } else {
-            openDirectory(new File(curPath));
-            getMvpView().showMessage("Create successful");
-        }
-    }
 
     @Override
     public void sortListByName() {
