@@ -26,7 +26,7 @@ public class CustomFolder extends AbstractFile {
     }
 
     @Override
-    public String getStrSize() {
+    public String getSizeInfo() {
         return String.valueOf(countFolderItemsCount());
     }
 

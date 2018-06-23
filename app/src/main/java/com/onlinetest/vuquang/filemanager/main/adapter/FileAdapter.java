@@ -97,7 +97,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         holder.checkboxSelect.setChecked(file.isSelected);
 
         holder.tvName.setText(file.getName());
-        holder.tvInfo.setText(file.getStrInfo());
+        holder.tvInfo.setText(file.getDetail());
         boolean knownType = false;
         if(file.isDirectory()) {
             knownType = true;

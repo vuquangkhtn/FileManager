@@ -29,7 +29,7 @@ public class CustomFile extends AbstractFile {
     }
 
     @Override
-    public String getStrSize() {
+    public String getSizeInfo() {
         String[] measure = {"B", "KB", "MB", "GB"};
         int countMeasure = 0;
         double size = getSize();

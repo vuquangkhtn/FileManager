@@ -27,15 +27,9 @@ public abstract class AbstractFile extends File{
     public long getLastOpenedTime() {
         return lastOpenedTime;
     }
-
     public void setLastOpenedTime(long lastOpenedTime) {
         this.lastOpenedTime = lastOpenedTime;
     }
-
-    public abstract long getSize();
-    public abstract String getStrSize();
-    public abstract String getExtension();
-
 
     public String getMimeType() {
         String type = null;
@@ -97,8 +91,8 @@ public abstract class AbstractFile extends File{
         }
     }
 
-    public String getStrInfo() {
-        return MessageFormat.format("{0} ({1})",getStrLastModified(), getStrSize());
+    public String getDetail() {
+        return MessageFormat.format("{0} ({1})",getStrLastModified(), getSizeInfo());
     }
 
     public static AbstractFile castType(String path) {
@@ -109,4 +103,9 @@ public abstract class AbstractFile extends File{
             return new CustomFile(path);
         }
     }
+
+
+    public abstract long getSize();
+    public abstract String getSizeInfo();
+    public abstract String getExtension();
 }

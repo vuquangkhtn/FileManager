@@ -329,7 +329,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         } else {
             tvType.setText(file.getExtension());
         }
-        tvFileSize.setText(file.getStrSize());
+        tvFileSize.setText(file.getSizeInfo());
         tvModified.setText(file.getStrLastModified());
         tvCreated.setText(file.getStrCreatedTime());
         tvOpenedDate.setText(file.getStrLastOpenedTime());
