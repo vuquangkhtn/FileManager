@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.onlinetest.vuquang.filemanager.R;
 import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
 import java.lang.reflect.Field;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
-    private List<CustomFile> fileList;
+    private List<AbstractFile> fileList;
     private boolean showCheckbox;
     private Context mContext;
 
@@ -59,7 +59,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         this.showCheckbox = isEnable;
     }
 
-    public void setData(List<CustomFile> listData) {
+    public void setData(List<AbstractFile> listData) {
         this.fileList = listData;
         notifyDataSetChanged();
     }
@@ -72,7 +72,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final FileHolder holder, final int position) {
-        final CustomFile file = fileList.get(position);
+        final AbstractFile file = fileList.get(position);
 
         if(showCheckbox) {
             holder.checkboxSelect.setVisibility(View.VISIBLE);
@@ -97,9 +97,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         holder.checkboxSelect.setChecked(file.isSelected);
 
         holder.tvName.setText(file.getName());
-        holder.tvInfo.setText(file.getInfo());
+        holder.tvInfo.setText(file.getStrInfo());
         boolean knownType = false;
-        if(file.getFile().isDirectory()) {
+        if(file.isDirectory()) {
             knownType = true;
             holder.imvIcon.setBackgroundResource(R.drawable.ic_folder);
         } else {
@@ -125,7 +125,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         });
     }
 
-    private void showPopupMenu(View v, final CustomFile file) {
+    private void showPopupMenu(View v, final AbstractFile file) {
         PopupMenu pm = new PopupMenu(mContext, v);
         try {
             Field[] fields = pm.getClass().getDeclaredFields();
@@ -195,7 +195,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         return 0;
     }
 
-    public void notifyRemove(CustomFile file) {
+    public void notifyRemove(AbstractFile file) {
         for (int i=0;i<fileList.size();i++) {
             if(fileList.get(i).getPath().equals(file.getPath())) {
                 fileList.remove(i);
@@ -208,7 +208,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     public void setSelect(boolean showCheckbox) {
         this.showCheckbox = showCheckbox;
         if(showCheckbox) {
-            for (CustomFile file:fileList) {
+            for (AbstractFile file:fileList) {
                 file.isSelected = false;
             }
         }
@@ -219,9 +219,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         this.fileItemListener = fileItemListener;
     }
 
-    public List<CustomFile> getSelectedList() {
-        List<CustomFile> selectedFile = new ArrayList<>();
-        for (CustomFile file:fileList) {
+    public List<AbstractFile> getSelectedList() {
+        List<AbstractFile> selectedFile = new ArrayList<>();
+        for (AbstractFile file:fileList) {
             if(file.isSelected) {
                 selectedFile.add(file);
             }
@@ -229,13 +229,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
         return selectedFile;
     }
 
-    public class FileHolder extends RecyclerView.ViewHolder {
+    class FileHolder extends RecyclerView.ViewHolder {
         private CheckBox checkboxSelect;
         private ImageView imvIcon;
         private TextView tvName;
         private TextView tvInfo;
         private ImageButton imbMore;
-        public FileHolder(View itemView) {
+        FileHolder(View itemView) {
             super(itemView);
             checkboxSelect = itemView.findViewById(R.id.item_select);
             imvIcon = itemView.findViewById(R.id.imv_file_icon);
@@ -246,11 +246,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
     }
 
     public interface FileItemListener {
-        void onOpenClicked(CustomFile file);
-        void onDeleteClicked(CustomFile file);
-        void onPermanentlyDeleteClicked(CustomFile file);
-        void onMoveClicked(CustomFile file);
-        void onCopyClicked(CustomFile file);
-        void onPropertiesClicked(CustomFile file);
+        void onOpenClicked(AbstractFile file);
+        void onDeleteClicked(AbstractFile file);
+        void onPermanentlyDeleteClicked(AbstractFile file);
+        void onMoveClicked(AbstractFile file);
+        void onCopyClicked(AbstractFile file);
+        void onPropertiesClicked(AbstractFile file);
     }
 }

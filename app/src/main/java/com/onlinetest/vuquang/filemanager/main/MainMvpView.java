@@ -1,7 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main;
 
 import com.onlinetest.vuquang.filemanager.base.MvpView;
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 
 import java.io.File;
 import java.util.List;
@@ -11,11 +11,11 @@ import java.util.List;
  */
 
 public interface MainMvpView extends MvpView {
-    void updateUI(List<CustomFile> fileList);
+    void updateUI(List<AbstractFile> fileList);
 
-    boolean openFile(CustomFile file);
+    boolean openFile(AbstractFile file);
 
     void setEmptyMode(boolean isEnable);
 
-    void notifyDelete(CustomFile file);
+    void notifyDelete(AbstractFile file);
 }

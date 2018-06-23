@@ -1,7 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main;
 
 import com.onlinetest.vuquang.filemanager.base.MvpPresenter;
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 
 import java.util.List;
 
@@ -18,13 +18,13 @@ public interface MainMvpPresenter<V extends MainMvpView> extends MvpPresenter<V>
 
     void loadRecycleBin();
 
-    void openFile(CustomFile file);
+    void openFile(AbstractFile file);
 
-    void deleteFile(CustomFile file);
+    void deleteFile(AbstractFile file);
 
-    void deleteMultiFiles(List<CustomFile> files);
+    void deleteMultiFiles(List<AbstractFile> files);
 
-    void permanentlyDeleteFile(CustomFile file);
+    void permanentlyDeleteFile(AbstractFile file);
 
     void copyFile(String srcFile, String path);
 
@@ -46,7 +46,7 @@ public interface MainMvpPresenter<V extends MainMvpView> extends MvpPresenter<V>
 
     void onBackClicked();
 
-    void copyMultiFiles(List<CustomFile> selectedList, String path);
+    void copyMultiFiles(List<AbstractFile> selectedList, String path);
 
-    void moveMultiFiles(List<CustomFile> selectedList, String path);
+    void moveMultiFiles(List<AbstractFile> selectedList, String path);
 }

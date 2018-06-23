@@ -26,7 +26,7 @@ import com.onlinetest.vuquang.filemanager.R;
 import com.onlinetest.vuquang.filemanager.app.FileManagerApp;
 import com.onlinetest.vuquang.filemanager.base.BaseActivity;
 import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 import com.onlinetest.vuquang.filemanager.dialog.FolderPickerDialog;
 import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
 
@@ -124,22 +124,22 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
         mAdapter.setFileItemListener(new FileAdapter.FileItemListener() {
             @Override
-            public void onOpenClicked(CustomFile file) {
+            public void onOpenClicked(AbstractFile file) {
                 mPresenter.openFile(file);
             }
 
             @Override
-            public void onDeleteClicked(CustomFile file) {
+            public void onDeleteClicked(AbstractFile file) {
                 mPresenter.deleteFile(file);
             }
 
             @Override
-            public void onPermanentlyDeleteClicked(CustomFile file) {
+            public void onPermanentlyDeleteClicked(AbstractFile file) {
                 mPresenter.permanentlyDeleteFile(file);
             }
 
             @Override
-            public void onMoveClicked(final CustomFile file) {
+            public void onMoveClicked(final AbstractFile file) {
                 FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
                 List<String> listPath = new ArrayList<>();
                 listPath.add(file.getPath());
@@ -154,7 +154,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             }
 
             @Override
-            public void onCopyClicked(final CustomFile file) {
+            public void onCopyClicked(final AbstractFile file) {
                 FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
                 List<String> listPath = new ArrayList<>();
                 listPath.add(file.getPath());
@@ -169,7 +169,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
             }
 
             @Override
-            public void onPropertiesClicked(CustomFile file) {
+            public void onPropertiesClicked(AbstractFile file) {
                 showPropertiesDialog(file);
             }
         });
@@ -307,7 +307,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         builder.show();
     }
 
-    private void showPropertiesDialog(CustomFile file) {
+    private void showPropertiesDialog(AbstractFile file) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("View Properties");
@@ -329,8 +329,8 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         } else {
             tvType.setText(file.getExtension());
         }
-        tvFileSize.setText(file.getFileSize());
-        tvModified.setText(file.getLastModified());
+        tvFileSize.setText(file.getStrSize());
+        tvModified.setText(file.getStrLastModified());
         tvCreated.setText(file.getStrCreatedTime());
         tvOpenedDate.setText(file.getStrLastOpenedTime());
 
@@ -398,17 +398,17 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     @Override
-    public void updateUI(List<CustomFile> fileList) {
+    public void updateUI(List<AbstractFile> fileList) {
         txtPath.setText(FileManagerApp.getApp().getCurPath());
         mAdapter.setData(fileList);
     }
 
     @Override
-    public boolean openFile(CustomFile file) {
+    public boolean openFile(AbstractFile file) {
         boolean openedFile;
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file.getFile()), file.getMimeType());
+            intent.setDataAndType(Uri.fromFile(file), file.getMimeType());
             startActivity(intent);
             openedFile = true;
         } catch (ActivityNotFoundException e) {
@@ -426,7 +426,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     @Override
-    public void notifyDelete(CustomFile file) {
+    public void notifyDelete(AbstractFile file) {
         mAdapter.notifyRemove(file);
     }
 
@@ -444,7 +444,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 case R.id.action_copy_to: {
                     FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
                     List<String> listPath = new ArrayList<>();
-                    for (CustomFile file: mAdapter.getSelectedList()) {
+                    for (AbstractFile file: mAdapter.getSelectedList()) {
                         listPath.add(file.getPath());
                     }
                     folderPickerDialog.setChosenPathList(listPath);
@@ -461,7 +461,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 case R.id.action_move_to: {
                     FolderPickerDialog folderPickerDialog = new FolderPickerDialog();
                     List<String> listPath = new ArrayList<>();
-                    for (CustomFile file: mAdapter.getSelectedList()) {
+                    for (AbstractFile file: mAdapter.getSelectedList()) {
                         listPath.add(file.getPath());
                     }
                     folderPickerDialog.setChosenPathList(listPath);

@@ -13,7 +13,7 @@ import com.onlinetest.vuquang.filemanager.data.model.action.CreateFolderAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.MoveAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
@@ -46,7 +46,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     private static final int MULTI_MOVE_ACTION = 32;
 
 
-    private List<CustomFile> fileList;
+    private List<AbstractFile> fileList;
     private Handler mainHandler;
 
     public MainPresenter(AppDataManager dataManager) {
@@ -113,9 +113,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                         break;
                     }
                     case SUCCESS_DELETE_ACTION: {
-                        CustomFile file;
+                        AbstractFile file;
                         if(msg.obj != null) {
-                            file = (CustomFile) msg.obj;
+                            file = (AbstractFile) msg.obj;
                         } else {
                             Log.d("ERROR","not input obj file for delete action");
                             return false;
@@ -126,9 +126,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
                         break;
                     }
                     case SUCCESS_PERMANENTLY_DELETE_ACTION: {
-                        CustomFile file;
+                        AbstractFile file;
                         if(msg.obj != null) {
-                            file = (CustomFile) msg.obj;
+                            file = (AbstractFile) msg.obj;
                         } else {
                             Log.d("ERROR","not input obj file for permanently delete action");
                             return false;
@@ -204,7 +204,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
 
     @Override
-    public void deleteFile(final CustomFile file) {
+    public void deleteFile(final AbstractFile file) {
         getMvpView().showLoading();
         new Thread(new Runnable() {
             @Override
@@ -219,7 +219,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     @Override
-    public void permanentlyDeleteFile(final CustomFile file) {
+    public void permanentlyDeleteFile(final AbstractFile file) {
         getMvpView().showLoading();
         new Thread(new Runnable() {
             @Override
@@ -275,12 +275,12 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     @Override
-    public void copyMultiFiles(final List<CustomFile> selectedList, final String path) {
+    public void copyMultiFiles(final List<AbstractFile> selectedList, final String path) {
         getMvpView().showLoading();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (CustomFile file:selectedList) {
+                for (AbstractFile file:selectedList) {
                     if(file.getPath().equals(path)) {
                         continue;
                     }
@@ -293,12 +293,12 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     @Override
-    public void moveMultiFiles(final List<CustomFile> selectedList, final String path) {
+    public void moveMultiFiles(final List<AbstractFile> selectedList, final String path) {
         getMvpView().showLoading();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (CustomFile file:selectedList) {
+                for (AbstractFile file:selectedList) {
                     if(file.getPath().equals(path)) {
                         continue;
                     }
@@ -311,12 +311,12 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     @Override
-    public void deleteMultiFiles(final List<CustomFile> selectedList) {
+    public void deleteMultiFiles(final List<AbstractFile> selectedList) {
         getMvpView().showLoading();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (CustomFile file:selectedList) {
+                for (AbstractFile file:selectedList) {
                     getDataManager().getActionManager().addAction(new DeleteAction(file.getPath()));
                 }
                 mainHandler.obtainMessage(MULTI_DELETE_ACTION,selectedList.get(0).getPath()).sendToTarget();
@@ -362,9 +362,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         FileManagerApp.getApp().setCurPath("");
         if(fileList != null && fileList.size() != 0) {
             getMvpView().setEmptyMode(false);
-            Collections.sort(fileList, new Comparator<CustomFile>() {
+            Collections.sort(fileList, new Comparator<AbstractFile>() {
                 @Override
-                public int compare(CustomFile o1, CustomFile o2) {
+                public int compare(AbstractFile o1, AbstractFile o2) {
                     Long time1 = o1.getLastOpenedTime();
                     Long time2 = o2.getLastOpenedTime();
                     return time2.compareTo(time1);
@@ -383,9 +383,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     @Override
-    public void openFile(CustomFile file) {
-        if(file.getFile().isDirectory()) {
-            openDirectory(file.getFile());
+    public void openFile(AbstractFile file) {
+        if(file.isDirectory()) {
+            openDirectory(file);
             FLog.show("browse directory "+file.getPath());
         } else {
             if(getMvpView().openFile(file)) {
@@ -400,9 +400,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByName() {
-        Collections.sort(fileList, new Comparator<CustomFile>() {
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
-            public int compare(CustomFile o1, CustomFile o2) {
+            public int compare(AbstractFile o1, AbstractFile o2) {
                 return o1.getName().compareToIgnoreCase(o2.getName());
             }
         });
@@ -412,9 +412,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByCreatedTime() {
-        Collections.sort(fileList, new Comparator<CustomFile>() {
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
-            public int compare(CustomFile o1, CustomFile o2) {
+            public int compare(AbstractFile o1, AbstractFile o2) {
                 Long time1 = o1.getCreatedTime();
                 Long time2 = o2.getCreatedTime();
                 return time2.compareTo(time1);
@@ -426,11 +426,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByModifed() {
-        Collections.sort(fileList, new Comparator<CustomFile>() {
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
-            public int compare(CustomFile o1, CustomFile o2) {
-                Long time1 = o1.getFile().lastModified();
-                Long time2 = o2.getFile().lastModified();
+            public int compare(AbstractFile o1, AbstractFile o2) {
+                Long time1 = o1.lastModified();
+                Long time2 = o2.lastModified();
                 return time2.compareTo(time1);
             }
         });
@@ -440,9 +440,9 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sortListByOpenedTime() {
-        Collections.sort(fileList, new Comparator<CustomFile>() {
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
-            public int compare(CustomFile o1, CustomFile o2) {
+            public int compare(AbstractFile o1, AbstractFile o2) {
                 Long time1 = o1.getLastOpenedTime();
                 Long time2 = o2.getLastOpenedTime();
                 return time2.compareTo(time1);
@@ -459,18 +459,18 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     private void defaultSort() {//File Type
-        Collections.sort(fileList, new Comparator<CustomFile>() {
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
-            public int compare(CustomFile o1, CustomFile o2) {
+            public int compare(AbstractFile o1, AbstractFile o2) {
                 return o1.getName().compareToIgnoreCase(o2.getName());
             }
         });
-        Collections.sort(fileList, new Comparator<CustomFile>() {
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
-            public int compare(CustomFile f1, CustomFile f2) {
-                if (f1.getFile().isDirectory() == f2.getFile().isDirectory())
+            public int compare(AbstractFile f1, AbstractFile f2) {
+                if (f1.isDirectory() && f2.isDirectory())
                     return 0;
-                else if (f1.getFile().isDirectory() && !f2.getFile().isDirectory())
+                else if (f1.isDirectory() && !f2.isDirectory())
                     return -1;
                 else
                     return 1;
@@ -493,13 +493,13 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         FileManagerApp.getApp().setCurPath(directory.getPath());
         if(directory.listFiles() != null && directory.listFiles().length != 0) {
             getMvpView().setEmptyMode(false);
-            for (File childFile:directory.listFiles()) {
-                if(childFile.getName().startsWith(".")) {//hidden file
+            for (String str:directory.list()) {
+                if(str.startsWith(".")) {//hidden file
                     continue;
                 }
-                CustomFile customFile = new CustomFile(childFile.getPath());
-                customFile.setLastOpenedTime(getDataManager().getOpenedFileManager().getOpenTime(childFile.getPath()));
-                fileList.add(customFile);
+                AbstractFile abstractFile = AbstractFile.castType(str);
+                abstractFile.setLastOpenedTime(getDataManager().getOpenedFileManager().getOpenTime(abstractFile.getPath()));
+                fileList.add(abstractFile);
             }
         } else {
             getMvpView().setEmptyMode(true);

@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,13 @@ import java.util.List;
 
 public class OpenedFileDAO extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "FileManager.db";
+    private static final String DATABASE_NAME = "FileManager.db";
     private static final int DATABASE_VERSION = 2;
 
-    public static final String TABLE_NAME = "opened_file";
-    public static final String COLUMN_ID = "id";
-    public static final String COLUMN_PATH = "path";
-    public static final String COLUMN_LAST_OPEN_TIME = "last_opened_time";
+    private static final String TABLE_NAME = "opened_file";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_PATH = "path";
+    private static final String COLUMN_LAST_OPEN_TIME = "last_opened_time";
 
     public OpenedFileDAO(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION);
@@ -44,7 +45,7 @@ public class OpenedFileDAO extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertOpenedFile(CustomFile file) {
+    public boolean insertOpenedFile(AbstractFile file) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -55,13 +56,6 @@ public class OpenedFileDAO extends SQLiteOpenHelper {
         return true;
     }
 
-    public Integer deleteOpenedFile(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME,
-                COLUMN_ID + " = ? ",
-                new String[] { Integer.toString(id) });
-    }
-
     public Integer deleteOpenedFile(String path) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NAME,
@@ -69,35 +63,34 @@ public class OpenedFileDAO extends SQLiteOpenHelper {
                 new String[] { path });
     }
 
-    public CustomFile getOpenedFile(String path) {
+    public long getOpenedTime(String path) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String sqlExec = MessageFormat.format("SELECT * FROM {0} WHERE {1} = ?",TABLE_NAME, COLUMN_PATH);
+        String sqlExec = MessageFormat.format("SELECT {0} FROM {1} WHERE {2} = ?",
+                COLUMN_LAST_OPEN_TIME, TABLE_NAME, COLUMN_PATH);
         Cursor cursor = db.rawQuery(sqlExec, new String[]{path});
 
-        if (cursor != null)
+        long openedTime = 0;
+        if (cursor != null) {
             cursor.moveToFirst();
+            try {
+                openedTime = cursor.getLong(1);
+            } catch (Exception e) {
 
-        CustomFile file = new CustomFile();
-        file.setId(Integer.parseInt(cursor.getString(0)));
-        file.setPath(path);
-        file.setLastOpenedTime(cursor.getLong(2));
-
-        cursor.close();
-
-        return file;
+            }
+            cursor.close();
+        }
+        return openedTime;
     }
 
-    public List<CustomFile> getAllOpenedFiles() {
-        List<CustomFile> list = new ArrayList<>();
+    public List<AbstractFile> getAllOpenedFiles() {
+        List<AbstractFile> list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery( "SELECT * FROM " + TABLE_NAME, null );
 
         if (cursor.moveToFirst()) {
             do {
-                CustomFile file = new CustomFile();
-                file.setId(Integer.parseInt(cursor.getString(0)));
-                file.setPath(cursor.getString(1));
+                AbstractFile file = AbstractFile.castType(cursor.getString(1));
                 file.setLastOpenedTime(cursor.getLong(2));
 
                 list.add(file);
