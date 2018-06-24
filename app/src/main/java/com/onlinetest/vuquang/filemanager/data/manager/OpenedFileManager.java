@@ -16,7 +16,7 @@ import java.util.List;
 public class OpenedFileManager {
     private OpenedFileDAO dao;
 
-    public OpenedFileManager(Context context) {
+    OpenedFileManager(Context context) {
         dao = new OpenedFileDAO(context);
     }
 

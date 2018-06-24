@@ -3,6 +3,8 @@ package com.onlinetest.vuquang.filemanager.app;
 import android.app.Application;
 import android.util.Log;
 
+import com.onlinetest.vuquang.filemanager.main.MainPresenter;
+import com.onlinetest.vuquang.filemanager.main.sort.AbstractSort;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 
 /**
@@ -13,6 +15,8 @@ public class FileManagerApp extends Application{
     private static FileManagerApp instance;
 
     private String curPath;
+
+    private FileManagerApp() {};
 
     @Override
     public void onCreate() {

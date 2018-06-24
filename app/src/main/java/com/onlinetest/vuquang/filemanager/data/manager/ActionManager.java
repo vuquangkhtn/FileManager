@@ -14,7 +14,7 @@ public class ActionManager {
     private Stack<FileAction> actions;
     private Stack<FileAction> undoActions;
 
-    public ActionManager() {
+    ActionManager() {
         actions = new Stack<>();
         undoActions = new Stack<>();
         createRecycleBinDir();

@@ -14,6 +14,8 @@ import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.MoveAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
+import com.onlinetest.vuquang.filemanager.main.sort.AbstractSort;
+import com.onlinetest.vuquang.filemanager.main.sort.NameSort;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
@@ -45,13 +47,14 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     private static final int MULTI_COPY_ACTION = 31;
     private static final int MULTI_MOVE_ACTION = 32;
 
-
+    private AbstractSort sort;
     private List<AbstractFile> fileList;
     private Handler mainHandler;
 
     public MainPresenter(AppDataManager dataManager) {
         super(dataManager);
         fileList = new ArrayList<>();
+        sort = new NameSort();
         mainHandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -350,6 +353,19 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     }
 
     @Override
+    public void sort(AbstractSort abstractSort) {
+        this.sort = abstractSort;
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
+            @Override
+            public int compare(AbstractFile o1, AbstractFile o2) {
+                return sort.compare(o1,o2);
+            }
+        });
+        sort.showLog();
+        getMvpView().updateUI(fileList);
+    }
+
+    @Override
     public void loadExternalStorage() {
         FileManagerApp.getApp().setCurPath(LocalPathUtils.EXTERNAL_STORAGE);
         File file = FileHelper.getFile(LocalPathUtils.EXTERNAL_STORAGE);
@@ -397,88 +413,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         }
     }
 
-
-    @Override
-    public void sortListByName() {
-        Collections.sort(fileList, new Comparator<AbstractFile>() {
-            @Override
-            public int compare(AbstractFile o1, AbstractFile o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
-        FLog.show("Sort list by Name");
-        getMvpView().updateUI(fileList);
-    }
-
-    @Override
-    public void sortListByCreatedTime() {
-        Collections.sort(fileList, new Comparator<AbstractFile>() {
-            @Override
-            public int compare(AbstractFile o1, AbstractFile o2) {
-                Long time1 = o1.getCreatedTime();
-                Long time2 = o2.getCreatedTime();
-                return time2.compareTo(time1);
-            }
-        });
-        getMvpView().updateUI(fileList);
-        FLog.show("Sort list by Created Name");
-    }
-
-    @Override
-    public void sortListByModifed() {
-        Collections.sort(fileList, new Comparator<AbstractFile>() {
-            @Override
-            public int compare(AbstractFile o1, AbstractFile o2) {
-                Long time1 = o1.lastModified();
-                Long time2 = o2.lastModified();
-                return time2.compareTo(time1);
-            }
-        });
-        getMvpView().updateUI(fileList);
-        FLog.show("Sort list by Last Modified");
-    }
-
-    @Override
-    public void sortListByOpenedTime() {
-        Collections.sort(fileList, new Comparator<AbstractFile>() {
-            @Override
-            public int compare(AbstractFile o1, AbstractFile o2) {
-                Long time1 = o1.getLastOpenedTime();
-                Long time2 = o2.getLastOpenedTime();
-                return time2.compareTo(time1);
-            }
-        });
-        getMvpView().updateUI(fileList);
-        FLog.show("Sort list by Opened Time");
-    }
-
-    @Override
-    public void sortListByFileType() {
-        defaultSort();
-        FLog.show("Sort list by File Type");
-    }
-
-    private void defaultSort() {//File Type
-        Collections.sort(fileList, new Comparator<AbstractFile>() {
-            @Override
-            public int compare(AbstractFile o1, AbstractFile o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
-        Collections.sort(fileList, new Comparator<AbstractFile>() {
-            @Override
-            public int compare(AbstractFile f1, AbstractFile f2) {
-                if (f1.isDirectory() && f2.isDirectory())
-                    return 0;
-                else if (f1.isDirectory() && !f2.isDirectory())
-                    return -1;
-                else
-                    return 1;
-            }
-        });
-        getMvpView().updateUI(fileList);
-    }
-
     @Override
     public void onBackClicked() {
         String curPath = FileManagerApp.getApp().getCurPath();
@@ -504,6 +438,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         } else {
             getMvpView().setEmptyMode(true);
         }
-        defaultSort();
+
+        sort(sort);
     }
 }

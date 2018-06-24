@@ -2,6 +2,7 @@ package com.onlinetest.vuquang.filemanager.main;
 
 import com.onlinetest.vuquang.filemanager.base.MvpPresenter;
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
+import com.onlinetest.vuquang.filemanager.main.sort.AbstractSort;
 
 import java.util.List;
 
@@ -34,15 +35,7 @@ public interface MainMvpPresenter<V extends MainMvpView> extends MvpPresenter<V>
 
     void createFolder(String s);
 
-    void sortListByName();
-
-    void sortListByCreatedTime();
-
-    void sortListByModifed();
-
-    void sortListByOpenedTime();
-
-    void sortListByFileType();
+    void sort(AbstractSort sort);
 
     void onBackClicked();
 

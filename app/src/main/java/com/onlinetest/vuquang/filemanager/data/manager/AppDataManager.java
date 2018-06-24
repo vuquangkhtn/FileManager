@@ -11,7 +11,7 @@ public class AppDataManager {
     private ActionManager actionManager;
     private OpenedFileManager openedFileManager;
 
-    public AppDataManager(ActionManager actionManager, OpenedFileManager openedFileManager) {
+    private AppDataManager(ActionManager actionManager, OpenedFileManager openedFileManager) {
         this.actionManager = actionManager;
         this.openedFileManager = openedFileManager;
     }

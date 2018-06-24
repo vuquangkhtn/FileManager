@@ -29,6 +29,11 @@ import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 import com.onlinetest.vuquang.filemanager.dialog.FolderPickerDialog;
 import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
+import com.onlinetest.vuquang.filemanager.main.sort.CreatedTimeSort;
+import com.onlinetest.vuquang.filemanager.main.sort.NameSort;
+import com.onlinetest.vuquang.filemanager.main.sort.OpenedTimeSort;
+import com.onlinetest.vuquang.filemanager.main.sort.TimeModifiedSort;
+import com.onlinetest.vuquang.filemanager.main.sort.FileTypeSort;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -362,23 +367,23 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 int checked = radioGroup.getCheckedRadioButtonId();
                 switch (checked) {
                     case R.id.rdb_name: {//Name
-                        mPresenter.sortListByName();
+                        mPresenter.sort(new NameSort());
                         break;
                     }
                     case R.id.rdb_created: {//Created
-                        mPresenter.sortListByCreatedTime();
+                        mPresenter.sort(new CreatedTimeSort());
                         break;
                     }
                     case R.id.rdb_modified: {//Modified
-                        mPresenter.sortListByModifed();
+                        mPresenter.sort(new TimeModifiedSort());
                         break;
                     }
                     case R.id.rdb_opened: {//Opened Time
-                        mPresenter.sortListByOpenedTime();
+                        mPresenter.sort(new OpenedTimeSort());
                         break;
                     }
                     case R.id.rdb_file_type: {//File Type
-                        mPresenter.sortListByFileType();
+                        mPresenter.sort(new FileTypeSort());
                         break;
                     }
                 }
