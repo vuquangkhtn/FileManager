@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Created by VuQuang on 6/23/2018.
@@ -17,18 +18,14 @@ public class CustomFolder extends AbstractFile {
     @Override
     public long getSize() {
         long totalSize = 0;
-        for (String path:
-             this.list()) {
-            File childFile = new File(path);
-            AbstractFile abstractFile = (AbstractFile) childFile;
+        if(this.listFiles().length == 0) {
+            return 0;
+        }
+        for (File file:this.listFiles()) {
+            AbstractFile abstractFile = AbstractFile.castType(file.getPath());
             totalSize += abstractFile.getSize();
         }
         return totalSize;
-    }
-
-    @Override
-    public String getSizeInfo() {
-        return String.valueOf(countFolderItemsCount());
     }
 
     @Override
@@ -43,6 +40,6 @@ public class CustomFolder extends AbstractFile {
 
     @Override
     public String getDetail() {
-        return MessageFormat.format("{0} ({1})",getStrLastModified(), countFolderItemsCount());
+        return MessageFormat.format("{0} ({1} items)",getStrLastModified(), countFolderItemsCount());
     }
 }

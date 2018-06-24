@@ -98,11 +98,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
 
         holder.tvName.setText(file.getName());
         holder.tvInfo.setText(file.getDetail());
-        boolean knownType = false;
         if(file.isDirectory()) {
-            knownType = true;
             holder.imvIcon.setBackgroundResource(R.drawable.ic_folder);
         } else {
+            boolean knownType = false;
             for (int i=0;i<arrFileType.length;i++) {
                 if(file.getExtension().toLowerCase().equals(arrFileType[i])) {
                     holder.imvIcon.setBackgroundResource(arrFileIco[i]);
@@ -110,9 +109,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileHolder> {
                     break;
                 }
             }
-        }
-        if(!knownType) {
-            holder.imvIcon.setBackgroundResource(R.drawable.ic_unknown_file);
+            if(!knownType) {
+                holder.imvIcon.setBackgroundResource(R.drawable.ic_unknown_file);
+            }
         }
 
         holder.imbMore.setOnClickListener(new View.OnClickListener() {

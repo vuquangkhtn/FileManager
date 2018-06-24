@@ -14,8 +14,6 @@ public class FileManagerApp extends Application{
 
     private String curPath;
 
-    private FileManagerApp() {};
-
     @Override
     public void onCreate() {
         super.onCreate();

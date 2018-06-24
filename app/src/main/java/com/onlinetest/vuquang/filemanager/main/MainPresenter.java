@@ -402,6 +402,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     @Override
     public void openFile(AbstractFile file) {
         if(file.isDirectory()) {
+            getDataManager().getOpenedFileManager().addOpenedFile(file.getPath());
             openDirectory(file);
             AppLog.show("browse directory "+file.getPath());
         } else {
@@ -428,11 +429,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
         FileManagerApp.getApp().setCurPath(directory.getPath());
         if(directory.listFiles() != null && directory.listFiles().length != 0) {
             getMvpView().setEmptyMode(false);
-            for (String str:directory.list()) {
-                if(str.startsWith(".")) {//hidden file
+            for (File childFile:directory.listFiles()) {
+                if(childFile.getName().startsWith(".")) {//hidden file
                     continue;
                 }
-                AbstractFile abstractFile = AbstractFile.castType(str);
+                AbstractFile abstractFile = AbstractFile.castType(childFile.getPath());
                 abstractFile.setLastOpenedTime(getDataManager().getOpenedFileManager().getOpenTime(abstractFile.getPath()));
                 fileList.add(abstractFile);
             }
