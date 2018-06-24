@@ -15,6 +15,7 @@ import com.onlinetest.vuquang.filemanager.data.model.action.MoveAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 import com.onlinetest.vuquang.filemanager.main.sort.AbstractSort;
+import com.onlinetest.vuquang.filemanager.main.sort.FileTypeSort;
 import com.onlinetest.vuquang.filemanager.main.sort.NameSort;
 import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
@@ -54,7 +55,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     public MainPresenter(AppDataManager dataManager) {
         super(dataManager);
         fileList = new ArrayList<>();
-        sort = new NameSort();
+        sort = new FileTypeSort();
         mainHandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {

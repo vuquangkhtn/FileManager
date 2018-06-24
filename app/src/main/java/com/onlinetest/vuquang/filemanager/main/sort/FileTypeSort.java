@@ -8,8 +8,8 @@ public class FileTypeSort implements AbstractSort {
     @Override
     public int compare(AbstractFile f1, AbstractFile f2) {
         if (f1.isDirectory() && f2.isDirectory())
-            return 0;
-        else if (f1.isDirectory() && !f2.isDirectory())
+            return (new NameSort()).compare(f1, f1);
+        else if (f1.isDirectory())
             return -1;
         else
             return 1;
