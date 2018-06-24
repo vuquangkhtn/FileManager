@@ -1,6 +1,6 @@
 package com.onlinetest.vuquang.filemanager.data.model.action;
 
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 
 import java.io.File;
@@ -30,7 +30,7 @@ public class MoveAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Move from {0} to {1}", srcPath, desDir));
+        AppLog.show(MessageFormat.format("Move from {0} to {1}", srcPath, desDir));
     }
 
     @Override

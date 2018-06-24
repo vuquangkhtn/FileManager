@@ -1,6 +1,6 @@
 package com.onlinetest.vuquang.filemanager.data.model.action;
 
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
@@ -29,7 +29,7 @@ public class DeleteAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Delete {0}", path));
+        AppLog.show(MessageFormat.format("Delete {0}", path));
 
     }
 

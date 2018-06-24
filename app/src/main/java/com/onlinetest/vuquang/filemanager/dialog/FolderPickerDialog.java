@@ -13,9 +13,11 @@ import android.widget.TextView;
 import com.onlinetest.vuquang.filemanager.R;
 import com.onlinetest.vuquang.filemanager.base.BaseDialog;
 import com.onlinetest.vuquang.filemanager.base.DialogMvpView;
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.CustomFolder;
 import com.onlinetest.vuquang.filemanager.dialog.adapter.FolderAdapter;
 import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
+import com.onlinetest.vuquang.filemanager.main.sort.FileTypeSort;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import java.util.List;
 public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
     public static final String TAG = "FolderPickerDialog";
 
-    private List<CustomFile> folderList;
+    private List<AbstractFile> folderList;
     private FolderAdapter mAdapter;
     private RecyclerView rvFolderList;
 
@@ -94,8 +96,8 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
         });
         mAdapter.setFolderItemListener(new FolderAdapter.FolderItemListener() {
             @Override
-            public void onOpenClicked(CustomFile file) {
-                openDirectory(file.getFile());
+            public void onOpenClicked(AbstractFile file) {
+                openDirectory(file);
             }
         });
 
@@ -111,8 +113,8 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
                     continue;
                 }
 
-                CustomFile customFile = new CustomFile(childFile.getPath());
-                folderList.add(customFile);
+                AbstractFile folder = new CustomFolder(childFile.getPath());
+                folderList.add(folder);
             }
             if(folderList.size() == 0) {
                 setEmptyMode(true);
@@ -136,25 +138,13 @@ public class FolderPickerDialog extends BaseDialog implements DialogMvpView{
         return false;
     }
 
-    private void sortListByFileType(List<CustomFile> fileList) {
-        Collections.sort(fileList, new Comparator<CustomFile>() {
+    private void sortListByFileType(List<AbstractFile> fileList) {
+        Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
-            public int compare(CustomFile o1, CustomFile o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
+            public int compare(AbstractFile o1, AbstractFile o2) {
+                return (new FileTypeSort()).compare(o1,o2);
             }
         });
-        Collections.sort(fileList, new Comparator<CustomFile>() {
-            @Override
-            public int compare(CustomFile f1, CustomFile f2) {
-                if (f1.getFile().isDirectory() == f2.getFile().isDirectory())
-                    return 0;
-                else if (f1.getFile().isDirectory() && !f2.getFile().isDirectory())
-                    return -1;
-                else
-                    return 1;
-            }
-        });
-
     }
 
     public void setChosenPathList(List<String> chosenPathList) {

@@ -29,6 +29,7 @@ import com.onlinetest.vuquang.filemanager.data.manager.AppDataManager;
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 import com.onlinetest.vuquang.filemanager.dialog.FolderPickerDialog;
 import com.onlinetest.vuquang.filemanager.main.adapter.FileAdapter;
+import com.onlinetest.vuquang.filemanager.main.sort.AbstractSort;
 import com.onlinetest.vuquang.filemanager.main.sort.CreatedTimeSort;
 import com.onlinetest.vuquang.filemanager.main.sort.NameSort;
 import com.onlinetest.vuquang.filemanager.main.sort.OpenedTimeSort;
@@ -360,33 +361,37 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
         radioGroup.check(R.id.rdb_name);
 
+
         builder.setView(dialogView);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int checked = radioGroup.getCheckedRadioButtonId();
+                final AbstractSort abstractSort;
                 switch (checked) {
                     case R.id.rdb_name: {//Name
-                        mPresenter.sort(new NameSort());
+                        abstractSort = new NameSort();
                         break;
                     }
                     case R.id.rdb_created: {//Created
-                        mPresenter.sort(new CreatedTimeSort());
+                        abstractSort = new CreatedTimeSort();
                         break;
                     }
                     case R.id.rdb_modified: {//Modified
-                        mPresenter.sort(new TimeModifiedSort());
+                        abstractSort = new TimeModifiedSort();
                         break;
                     }
                     case R.id.rdb_opened: {//Opened Time
-                        mPresenter.sort(new OpenedTimeSort());
+                        abstractSort = new OpenedTimeSort();
                         break;
                     }
-                    case R.id.rdb_file_type: {//File Type
-                        mPresenter.sort(new FileTypeSort());
-                        break;
+                    case R.id.rdb_file_type://File Type
+                    default: {
+                        abstractSort = new FileTypeSort();
                     }
                 }
+                mPresenter.sort(abstractSort);
+                abstractSort.showLog();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

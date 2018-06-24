@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onlinetest.vuquang.filemanager.R;
-import com.onlinetest.vuquang.filemanager.data.model.file.CustomFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
+import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderHolder> {
-    private List<CustomFile> fileList;
+    private List<AbstractFile> fileList;
     private Context mContext;
 
     private FolderItemListener folderItemListener;
@@ -27,7 +28,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderHold
         this.mContext = context;
     }
 
-    public void setData(List<CustomFile> listData) {
+    public void setData(List<AbstractFile> listData) {
         this.fileList = listData;
         notifyDataSetChanged();
     }
@@ -39,7 +40,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderHold
 
     @Override
     public void onBindViewHolder(FolderHolder holder, int position) {
-        final CustomFile file = fileList.get(position);
+        final AbstractFile file = fileList.get(position);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +50,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderHold
         });
 
         holder.tvName.setText(file.getName());
-        holder.tvInfo.setText(file.getInfo());
+        holder.tvInfo.setText(file.getDetail());
         holder.imvIcon.setBackgroundResource(R.drawable.ic_folder);
     }
 
@@ -79,6 +80,6 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderHold
     }
 
     public interface FolderItemListener {
-        void onOpenClicked(CustomFile file);
+        void onOpenClicked(AbstractFile file);
     }
 }

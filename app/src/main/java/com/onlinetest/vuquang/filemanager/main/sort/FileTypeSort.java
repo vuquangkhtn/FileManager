@@ -1,7 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main.sort;
 
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 
 public class FileTypeSort implements AbstractSort {
 
@@ -16,6 +16,6 @@ public class FileTypeSort implements AbstractSort {
     }
     @Override
     public void showLog() {
-        FLog.show("sort by file type");
+        AppLog.show("sort by file type");
     }
 }

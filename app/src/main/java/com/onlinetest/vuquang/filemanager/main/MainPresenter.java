@@ -14,10 +14,9 @@ import com.onlinetest.vuquang.filemanager.data.model.action.DeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.MoveAction;
 import com.onlinetest.vuquang.filemanager.data.model.action.PermanentlyDeleteAction;
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 import com.onlinetest.vuquang.filemanager.main.sort.AbstractSort;
 import com.onlinetest.vuquang.filemanager.main.sort.FileTypeSort;
-import com.onlinetest.vuquang.filemanager.main.sort.NameSort;
-import com.onlinetest.vuquang.filemanager.utils.FLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 import com.onlinetest.vuquang.filemanager.app.LocalPathUtils;
 
@@ -355,14 +354,15 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public void sort(AbstractSort abstractSort) {
-        this.sort = abstractSort;
+        if(abstractSort != null) {
+            this.sort = abstractSort;
+        }
         Collections.sort(fileList, new Comparator<AbstractFile>() {
             @Override
             public int compare(AbstractFile o1, AbstractFile o2) {
                 return sort.compare(o1,o2);
             }
         });
-        sort.showLog();
         getMvpView().updateUI(fileList);
     }
 
@@ -403,11 +403,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
     public void openFile(AbstractFile file) {
         if(file.isDirectory()) {
             openDirectory(file);
-            FLog.show("browse directory "+file.getPath());
+            AppLog.show("browse directory "+file.getPath());
         } else {
             if(getMvpView().openFile(file)) {
                 getDataManager().getOpenedFileManager().addOpenedFile(file.getPath());
-                FLog.show("open file "+file.getPath());
+                AppLog.show("open file "+file.getPath());
             } else {
                 getMvpView().showMessage("This file is not supported");
             }

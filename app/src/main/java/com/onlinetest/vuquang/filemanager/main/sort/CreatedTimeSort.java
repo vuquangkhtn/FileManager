@@ -1,7 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main.sort;
 
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 
 public class CreatedTimeSort implements AbstractSort {
 
@@ -14,6 +14,6 @@ public class CreatedTimeSort implements AbstractSort {
 
     @Override
     public void showLog() {
-        FLog.show("sort by created time");
+        AppLog.show("sort by created time");
     }
 }

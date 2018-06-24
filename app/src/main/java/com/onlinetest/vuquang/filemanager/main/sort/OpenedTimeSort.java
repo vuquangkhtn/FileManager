@@ -1,7 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main.sort;
 
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 
 public class OpenedTimeSort implements AbstractSort {
     @Override
@@ -13,6 +13,6 @@ public class OpenedTimeSort implements AbstractSort {
     }
     @Override
     public void showLog() {
-        FLog.show("sort by opened time");
+        AppLog.show("sort by opened time");
     }
 }

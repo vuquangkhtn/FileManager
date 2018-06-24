@@ -1,6 +1,6 @@
 package com.onlinetest.vuquang.filemanager.data.model.action;
 
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 import com.onlinetest.vuquang.filemanager.utils.FileHelper;
 
 import java.text.MessageFormat;
@@ -27,7 +27,7 @@ public class CreateFolderAction implements FileAction {
 
     @Override
     public void logMessage() {
-        FLog.show(MessageFormat.format("Create Folder {0}", path));
+        AppLog.show(MessageFormat.format("Create Folder {0}", path));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.onlinetest.vuquang.filemanager.main.sort;
 
 import com.onlinetest.vuquang.filemanager.data.model.file.AbstractFile;
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
 
 /**
  * Created by VuQuang on 6/24/2018.
@@ -14,6 +14,6 @@ public class NameSort implements AbstractSort {
     }
     @Override
     public void showLog() {
-        FLog.show("sort by name");
+        AppLog.show("sort by name");
     }
 }

@@ -1,11 +1,9 @@
 package com.onlinetest.vuquang.filemanager.app;
 
 import android.app.Application;
-import android.util.Log;
 
-import com.onlinetest.vuquang.filemanager.main.MainPresenter;
-import com.onlinetest.vuquang.filemanager.main.sort.AbstractSort;
-import com.onlinetest.vuquang.filemanager.utils.FLog;
+import com.onlinetest.vuquang.filemanager.log.AppLog;
+import com.onlinetest.vuquang.filemanager.log.ConsoleLog;
 
 /**
  * Created by VuQuang on 6/10/2018.
@@ -23,8 +21,7 @@ public class FileManagerApp extends Application{
         super.onCreate();
         curPath = "";
         instance = this;
-        //Todo: config log service
-        FLog.setLogType(FLog.LOG_FILE);
+        AppLog.setLog(new ConsoleLog());
     }
 
     public static FileManagerApp getApp() {

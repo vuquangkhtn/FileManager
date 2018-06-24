@@ -125,7 +125,7 @@ public class FileHelper {
         return copyFile;
     }
 
-    static boolean appendStrToFile(String path, String message) {
+    public static boolean appendStrToFile(String path, String message) {
         if(!isExist(path))
         {
             createDirectory(getParentDir(path));
