@@ -1,9 +1,12 @@
 package com.onlinetest.vuquang.filemanager.main;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -43,6 +46,8 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements MainMvpView{
     private static final String TAG = "MainActivity";
+    private static int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 100;
+    private static int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 101;
 
     private FileAdapter mAdapter;
     private RecyclerView rvFileList;
@@ -179,6 +184,34 @@ public class MainActivity extends BaseActivity implements MainMvpView{
                 showPropertiesDialog(file);
             }
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    // Explain to the user why we need to read the contacts
+                }
+
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                if (shouldShowRequestPermissionRationale(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    // Explain to the user why we need to write the contacts
+                }
+
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            }
+        }
+
+
         setQuickAccessUI();
     }
 
